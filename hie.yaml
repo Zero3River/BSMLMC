@@ -1,0 +1,13 @@
+cradle:
+  stack:
+    - path: "./lib"
+      component: "BSMLMC:lib"
+
+    - path: "./exec/Main.lhs"
+      component: "BSMLMC:exe:myprogram"
+
+    - path: "./exec/Paths_report.hs"
+      component: "BSMLMC:exe:myprogram"
+
+    - path: "./test"
+      component: "BSMLMC:test:simpletests"

@@ -1,0 +1,16 @@
+
+\section{How to use this?}
+
+To generate the PDF, open \texttt{report.tex} in your favorite \LaTeX editor and compile.
+Alternatively, you can manually do
+\texttt{pdflatex report; bibtex report; pdflatex report; pdflatex report} in a terminal.
+
+You should have stack installed (see \url{https://haskellstack.org/}) and
+open a terminal in the same folder.
+
+\begin{itemize}
+  \item To compile everything: \verb|stack build|.
+  \item To open ghci and play with your code: \verb|stack ghci|
+  \item To run the executable from Section \ref{sec:Main}: \verb|stack build && stack exec myprogram|
+  \item To run the tests from Section \ref{sec:simpletests}: \verb|stack clean && stack test --coverage|
+\end{itemize}

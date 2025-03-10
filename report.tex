@@ -1,0 +1,43 @@
+\documentclass[12pt,a4paper]{article}
+\input{latexmacros.tex}
+
+\title{My Report}
+\author{Me}
+\date{\today}
+\hypersetup{pdfauthor={Me}, pdftitle={My Report}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We give a toy example of a report in \emph{literate programming} style.
+The main advantage of this is that source code and documentation can
+be written and presented next to each other.
+We use the listings package to typeset Haskell source code nicely.
+\end{abstract}
+
+\vfill
+
+\tableofcontents
+
+\clearpage
+
+% We include one file for each section. The ones containing code should
+% be called something.lhs and also mentioned in the .cabal file.
+
+\input{Howto.tex}
+
+\input{lib/Basics.lhs}
+
+\input{exec/Main.lhs}
+
+\input{test/simpletests.lhs}
+
+\input{Conclusion.tex}
+
+\addcontentsline{toc}{section}{Bibliography}
+\bibliographystyle{alpha}
+\bibliography{references.bib}
+
+\end{document}

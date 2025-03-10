@@ -1,0 +1,38 @@
+name: BSMLMC
+version: 0.1.0.0
+synopsis: My Haskell project
+description: See report.pdf
+maintainer: My Name <my.email@example.com>
+category: Logic
+
+ghc-options: -Wall
+
+dependencies:
+  - QuickCheck
+  - base
+  - containers
+  - directory
+  - lens
+  - mtl
+  - parsec
+  - random
+  - template-haskell
+
+library:
+  source-dirs: lib
+
+executables:
+  myprogram:
+    main: Main.lhs
+    source-dirs: exec
+    dependencies:
+      - report
+
+tests:
+  simpletests:
+    main: simpletests.lhs
+    source-dirs: test
+    dependencies:
+      - report
+      - QuickCheck
+      - hspec
