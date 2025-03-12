@@ -1,20 +1,65 @@
+% \documentclass[12pt,a4paper]{article}
+% \input{latexmacros.tex}
+
+% \title{A Model Checker for Bilateral State-based Modal Logic (BSML)}
+% \author{Me}
+% \date{\today}
+% \hypersetup{pdfauthor={Me}, pdftitle={A Model Checker for Bilateral State-based Modal Logic (BSML)}}
+
+% \begin{document}
+
+% \maketitle
+
+% \begin{abstract}
+% We give a toy example of a report in \emph{literate programming} style.
+% The main advantage of this is that source code and documentation can
+% be written and presented next to each other.
+% We use the listings package to typeset Haskell source code nicely.
+% \end{abstract}
+
+% \vfill
+
+% \tableofcontents
+
+% \clearpage
+
+% % We include one file for each section. The ones containing code should
+% % be called something.lhs and also mentioned in the .cabal file.
+
+% \input{Howto.tex}
+
+
+% \input{lib/Basics.lhs}
+
+% \input{exec/Main.lhs}
+
+% \input{test/simpletests.lhs}
+
+% \input{Conclusion.tex}
+
+% \addcontentsline{toc}{section}{Bibliography}
+% \bibliographystyle{alpha}
+% \bibliography{references.bib}
+
+% \end{document}
+
+
 \documentclass[12pt,a4paper]{article}
 \input{latexmacros.tex}
 
 \title{A Model Checker for Bilateral State-based Modal Logic (BSML)}
-\author{Me}
+\author{Group 2}
 \date{\today}
-\hypersetup{pdfauthor={Me}, pdftitle={A Model Checker for Bilateral State-based Modal Logic (BSML)}}
+\hypersetup{pdfauthor={Group 2}, pdftitle={A Model Checker for Bilateral State-based Modal Logic (BSML)}}
 
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
-We give a toy example of a report in \emph{literate programming} style.
-The main advantage of this is that source code and documentation can
-be written and presented next to each other.
-We use the listings package to typeset Haskell source code nicely.
+
+    Bilateral State-based Modal Logic (BSML) extends classical modal logic by adopting state-based semantics and introducing a non-emptiness atom to account for free choice inferences in natural language. Despite its expressive power, no automated verification tool exists for BSML. This project aims to de- velop a model checker for BSML, enabling automated reasoning over its logical properties. The tool will implement a decision procedure for model checking BSML formulas, ensuring computational efficiency and correctness. Applica- tions include verifying linguistic and logical constraints in team semantics.
+
 \end{abstract}
 
 \vfill
@@ -26,13 +71,10 @@ We use the listings package to typeset Haskell source code nicely.
 % We include one file for each section. The ones containing code should
 % be called something.lhs and also mentioned in the .cabal file.
 
-\input{Howto.tex}
 
-\input{lib/Basics.lhs}
+\input{lib/Checker.lhs}
 
 \input{exec/Main.lhs}
-
-\input{test/simpletests.lhs}
 
 \input{Conclusion.tex}
 
