@@ -9,10 +9,13 @@
 \parskip0.5em
 
 
-\usepackage{、graphicx}
+\usepackage{graphicx}
 
 % 定义一个新的“反向 models”符号
 \newcommand{\leftmodels}{\mathrel{\reflectbox{$\models$}}}
+% 定义 split disjunction 符号（向右旋转 90°）
+\newcommand{\inqdisj}{\mathrel{\raisebox{0.8ex}{\rotatebox{-90}{$\geqslant$}}}}
+
 
 \usepackage{tikz}
 \usetikzlibrary{arrows,trees,positioning,shapes,patterns}

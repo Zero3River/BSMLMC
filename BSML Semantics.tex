@@ -36,6 +36,8 @@ M, s &\models \varphi \land \psi \quad \text{iff} \quad M, s \models \varphi \te
 M, s &\leftmodels  \varphi \land \psi \quad \text{iff} \quad \exists t, u \subseteq s \text{ s.t. } s = t \cup u \text{ and } M, t \leftmodels \varphi \text{ and } M, u \leftmodels \psi \\
 M, s &\models \varphi \lor \psi \quad \text{iff} \quad \exists t, u \subseteq s \text{ s.t. } s = t \cup u \text{ and } M, t \models \varphi \text{ and } M, u \models \psi \\
 M, s &\leftmodels \varphi \lor \psi \quad \text{iff} \quad M, s \leftmodels \varphi \text{ and } M, s \leftmodels \psi \\
+M, s &\models \varphi \inqdisj \psi \quad \text{iff} M, s \models \varphi \text{ or } M, s \models \psi \\
+M, s &\leftmodels \varphi \inqdisj \psi \quad \text{iff} M, s \leftmodels\varphi \text{ and } M, s \leftmodels \psi\\
 M, s &\models \Diamond \varphi \quad \text{iff} \quad \forall w \in s, \exists t \subseteq R[w] \text{ s.t. } t \neq \emptyset \text{ and } M, t \models \varphi \\
 M, s &\leftmodels  \Diamond \varphi \quad \text{iff} \quad \forall w \in s, M, R[w] \leftmodels \varphi
 \end{align*}
