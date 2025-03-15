@@ -35,3 +35,20 @@ instance Show KripkeModel where
     vstr = "(fromJust . flip lookup " ++ show [(w, v w) | w <- u] ++ ")"
 
 \end{code}
+
+The following helper function defines the set of all successors of a world:
+
+\begin{code}
+(!) :: Relation -> World -> [World]
+(!) r w = map snd $ filter ((==) w . fst) r
+\end{code}
+
+Here we define the semantics of \textbf{BSML} ...
+
+\begin{code}
+(|=) :: ModelState -> Bool
+(|=) = undefined
+
+(=|) :: ModelState -> Bool
+(=|) = undefined
+\end{code}
