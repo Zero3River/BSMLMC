@@ -47,8 +47,15 @@ Here we define the semantics of \textbf{BSML} ...
 
 \begin{code}
 (|=) :: ModelState -> BSMLForm -> Bool
-(|=) = undefined
+(KrM _ v _, s) |= (P p) = all (\w -> p `elem` v w) s
+(_, s) |= Bot = null s
+(_, s) |= NE = not $ null s
+(KrM u v r, s) |= (Neg f) = (KrM u v r, s) =| f
 
 (=|) :: ModelState -> BSMLForm -> Bool
-(=|) = undefined
+(KrM _ v _, s) =| (P p) = all (\w -> p `notElem` v w) s
+(_, _) =| Bot = True
+(_, s) =| NE = null s
+(KrM u v r, s) =| (Neg f) = (KrM u v r, s) |= f
+
 \end{code}
