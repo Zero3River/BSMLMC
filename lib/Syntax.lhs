@@ -15,9 +15,9 @@ box :: BSMLForm -> BSMLForm
 box = Neg . Dia . Neg
 \end{code}
 
-Note that Dis is the "V" disjunction, while Gdis is the "\textbackslash V" disjunction.
+Note that Dis is the "$\lor$" disjunction, while Gdis is the "$\inqdisj$" disjunction.
 
-The pragmatic enrichment function $[\,]^+ : \mathbf{BSML} \to \mathbf{BSML}$ is describe recursively as follows:
+The pragmatic enrichment function $[\,]^+ : \mathbf{ML} \to \mathbf{BSML}$ is describe recursively as follows:
 
 
 \begin{code}
