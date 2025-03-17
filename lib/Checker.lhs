@@ -81,6 +81,23 @@ m |= (Gdis f g) = m |= f || m |= g
 (k, s) =| (Con f g) = any (\(ts,us) -> (k, ts) =| f && (k, us) =| g) (allPairs s)
 m =| (Dis f g) = m =| f && m =| g
 m =| (Gdis f g) = m =| f && m =| g
-(KrM u v r, s)  =| (Dia f) = all (\w -> (KrM u v r, r ! w) |= f)  s
+(KrM u v r, s)  =| (Dia f) = all (\w -> (KrM u v r, r ! w) =| f)  s
+
+example1 :: KripkeModel
+example1 = KrM [0,1,2] myVal [(0,1), (1,2), (2,1)] where
+  myVal 0 = [0]
+  myVal _ = [4]
+
+example2 :: KripkeModel
+example2 = KrM [0,1] myVal [(0,1), (1,1)] where
+  myVal 0 = [0]
+  myVal _ = [0, 4]
+
+example11 :: ModelState
+example11 = (example1, [0,1,2])
+
+example12 :: ModelState
+example12 = (example2, [0,1])
+
 
 \end{code}
