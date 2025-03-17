@@ -46,13 +46,22 @@ The following helper function defines the set of all successors of a world:
 Here we define the semantics of \textbf{BSML} ...
 
 \begin{code}
+
+-- helper function to find all pairs of worlds t and u that the union of t and u is the input s
+allPairs :: [World] -> [([World], [World])]
+allPairs []     = [([],[])]
+allPairs (x:xs) =
+  [ (x:ts, x:us) | (ts,us) <- allPairs xs ] ++  
+  [ (x:ts, us)   | (ts,us) <- allPairs xs ] ++  
+  [ (ts, x:us)   | (ts,us) <- allPairs xs ]  
+
 (|=) :: ModelState -> BSMLForm -> Bool
 (KrM _ v _, s) |= (P p) = all (\w -> p `elem` v w) s
 (_, s) |= Bot = null s
 (_, s) |= NE = not $ null s
 (KrM u v r, s) |= (Neg f) = (KrM u v r, s) =| f
 m |= (Con f g) = m |= f && m |= g
-(KrM u v r, s) |= (Dis f g) = undefined
+(k, s) |= (Dis f g) = any (\(ts,us) -> (k, ts) |= f && (k, us) |= g) (allPairs s)
 m |= (Gdis f g) = m |= f || m |= g
 (KrM u v r, s) |= (Dia f) = undefined
 
@@ -62,7 +71,7 @@ m |= (Gdis f g) = m |= f || m |= g
 (_, _) =| Bot = True
 (_, s) =| NE = null s
 (KrM u v r, s) =| (Neg f) = (KrM u v r, s) |= f
-(KrM u v r, s) =| (Con f g) = undefined
+(k, s) =| (Con f g) = any (\(ts,us) -> (k, ts) =| f && (k, us) =| g) (allPairs s)
 m =| (Dis f g) = m =| f && m =| g
 m =| (Gdis f g) = m =| f && m =| g
 (KrM u v r, s) =| (Dia f) = undefined
