@@ -55,6 +55,13 @@ allPairs (x:xs) =
   [ (x:ts, us)   | (ts,us) <- allPairs xs ] ++  
   [ (ts, x:us)   | (ts,us) <- allPairs xs ]  
 
+-- helper function to find all non-empty subsets of a list
+subsetsNonEmpty :: [World] -> [[World]]
+subsetsNonEmpty [] = [] 
+subsetsNonEmpty (x:xs) =
+  let rest = subsetsNonEmpty xs
+  in [[x]] ++ rest ++ map (x:) rest
+
 (|=) :: ModelState -> BSMLForm -> Bool
 (KrM _ v _, s) |= (P p) = all (\w -> p `elem` v w) s
 (_, s) |= Bot = null s
@@ -63,7 +70,7 @@ allPairs (x:xs) =
 m |= (Con f g) = m |= f && m |= g
 (k, s) |= (Dis f g) = any (\(ts,us) -> (k, ts) |= f && (k, us) |= g) (allPairs s)
 m |= (Gdis f g) = m |= f || m |= g
-(KrM u v r, s) |= (Dia f) = undefined
+(KrM u v r, s) |= (Dia f) = all (\w -> any (\l -> (KrM u v r,l) |= f ) (subsetsNonEmpty (r ! w)))  s
 
 
 (=|) :: ModelState -> BSMLForm -> Bool
@@ -74,6 +81,6 @@ m |= (Gdis f g) = m |= f || m |= g
 (k, s) =| (Con f g) = any (\(ts,us) -> (k, ts) =| f && (k, us) =| g) (allPairs s)
 m =| (Dis f g) = m =| f && m =| g
 m =| (Gdis f g) = m =| f && m =| g
-(KrM u v r, s) =| (Dia f) = undefined
+(KrM u v r, s)  =| (Dia f) = all (\w -> (KrM u v r, r ! w) |= f)  s
 
 \end{code}
