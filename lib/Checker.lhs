@@ -46,9 +46,9 @@ The following helper function defines the set of all successors of a world:
 Here we define the semantics of \textbf{BSML} ...
 
 \begin{code}
-(|=) :: ModelState -> Bool
+(|=) :: ModelState -> BSMLForm -> Bool
 (|=) = undefined
 
-(=|) :: ModelState -> Bool
+(=|) :: ModelState -> BSMLForm -> Bool
 (=|) = undefined
 \end{code}
