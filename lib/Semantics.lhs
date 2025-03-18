@@ -1,6 +1,6 @@
 
 
-\section{The Definiton of Model Checker Data Type}\label{sec:Basics}
+\section{Semantics}\label{sec:Semantics}
 
 
 The semantics of BSML is based on \textit{team semantics}, where formulas are interpreted with respect to sets of possible worlds (called \textit{states}) rather than single worlds. A \textit{model} \(M\) is a triple \((W, R, V)\), where:
