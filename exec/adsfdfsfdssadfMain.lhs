@@ -1,4 +1,3 @@
-
 \section{Wrapping it up in an exectuable}\label{sec:Main} 
 
 We will now use the library form Section \ref{sec:Basics} in a program.
