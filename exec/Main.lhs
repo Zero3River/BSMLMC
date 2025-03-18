@@ -6,33 +6,63 @@ We will now use the library form Section \ref{sec:Basics} in a program.
 \begin{code}
 module Main where
 
-import Basics
+import ModelChecker
+import Syntax
+import Checker
+
+testModel :: KripkeModel
+testModel = KrM 
+    [1, 2, 3]  
+    (\w -> if w == 1 then [1] else if w == 2 then [2] else [3])  
+    [(1, 2), (2, 3)]  
+
+testFormula1 :: BSMLForm
+testFormula1 = P 1  -- p1
+
+testFormula2 :: BSMLForm
+testFormula2 = Dia (P 3)  -- ◇p3
+
+testFormula3 :: BSMLForm
+testFormula3 = Neg (P 1)  -- ¬p1
+
+testFormula4 :: BSMLForm
+testFormula4 = Con (P 1) NE  -- p1 ∧ NE
 
 main :: IO ()
 main = do
-  putStrLn "Hello!"
-  print somenumbers
-  print (map funnyfunction somenumbers)
-  myrandomnumbers <- randomnumbers
-  print myrandomnumbers
-  print (map funnyfunction myrandomnumbers)
-  putStrLn "GoodBye"
+    putStrLn "=== Running BSML Model Checker Tests ==="
+    putStrLn "Kripke Model:"
+    print testModel
+    putStrLn "\nChecking formulas:"
+    print $ ("P 1:", modelCheck testModel [1] testFormula1)  
+    print $ ("¬P 1:", modelCheck testModel [1] testFormula3) 
+    print $ ("◇P 3:", modelCheck testModel [1] testFormula2) 
+    print $ ("P 1 ∧ NE:", modelCheck testModel [1] testFormula4)  
+    putStrLn "=== Tests Completed ==="
+
 \end{code}
 
 We can run this program with the commands:
 
 \begin{verbatim}
 stack build
-stack exec myprogram
+stack exec bsml_checker
 \end{verbatim}
 
 The output of the program is something like this:
 
 \begin{verbatim}
-Hello!
-[1,2,3,4,5,6,7,8,9,10]
-[100,100,300,300,500,500,700,700,900,900]
-[1,3,0,1,1,2,8,0,6,4]
-[100,300,42,100,100,100,700,42,500,300]
-GoodBye
+
+=== Running BSML Model Checker Tests ===
+Kripke Model:
+KrM [1,2,3] <function> [(1,2),(2,3)]
+
+Checking formulas:
+("P 1:", True)
+("¬P 1:", False)
+("◇P 3:", True)
+("P 1 ∧ NE:", True)
+
+=== Tests Completed ===
+
 \end{verbatim}
