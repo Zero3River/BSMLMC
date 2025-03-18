@@ -8,16 +8,21 @@ module Main where
 
 import Web.Scotty
 import Data.Text.Lazy (Text)
-import qualified Data.String as DS (fromString)
 import Data.Aeson (FromJSON, ToJSON, Object, encode, decode)
 import Data.Aeson (object, (.=))
 import Control.Monad.IO.Class (liftIO)
 import GHC.Generics (Generic)
 import Syntax
+import Parser
 import Checker
 import Data.List
 import Data.Maybe
 import qualified Data.Aeson.Key as Key
+import Text.Parsec
+import Text.Parsec.String
+import Text.Parsec.Expr
+import Text.Parsec.Token
+import Text.Parsec.Language
 
 data Person = Person
     { name :: String
@@ -32,6 +37,9 @@ data Input = Input
     , formula :: String
     , isSupport :: Bool
     } deriving (Show, Generic, FromJSON, ToJSON)
+
+
+
 
 -- 将Input转换为ModelState
 inputToModelState :: Input -> ModelState
@@ -52,17 +60,45 @@ inputToModelState input = (kripkeModel, state')
     -- 从输入中获取状态
     state' = state input
 
+-- 检查公式是否在给定的模型状态下成立
+checkFormula :: ModelState -> String -> Bool -> Bool
+checkFormula modelState formulaStr isSupport = 
+  case parseForm formulaStr of
+    Left err -> error $ "解析公式错误: " ++ show err
+    Right parsedFormula -> 
+      if isSupport
+        then modelState |= parsedFormula  -- 支持关系 |=
+        else modelState =| parsedFormula  -- 拒绝关系 =|
+
 main :: IO ()
 main = scotty 3000 $ do
-    post "/input" $ do  -- 使用OverloadedStrings，不需要显式转换
+    post "/input" $ do
         input <- jsonData :: ActionM Input
         let modelState = inputToModelState input
             (kripkeModel, state') = modelState
             KrM universe' valuation' relation' = kripkeModel
-        json $ object [
-            "result" .= isSupport input
-          , "formula" .= formula input
-          , "state" .= state'
-          -- 可以添加更多信息...
-          ]
+            
+            -- 解析并检查公式
+            result = do
+              parsedFormula <- parseForm (formula input)
+              return $ if isSupport input
+                         then modelState |= parsedFormula  -- 支持关系
+                         else modelState =| parsedFormula  -- 拒绝关系
+                         
+            -- 根据解析结果生成响应
+            finalResult = case result of
+              Left err -> object [
+                  "error" .= show err
+                , "formula" .= formula input
+                , "state" .= state'
+                ]
+              Right checkResult -> object [
+                  "result" .= checkResult
+                , "formula" .= formula input
+                , "state" .= state'
+                , "relation" .= show relation'
+                , "relation_type" .= (if isSupport input then "support |=" else "reject =|" :: String)
+                ]
+            
+        json finalResult
 \end{code}
