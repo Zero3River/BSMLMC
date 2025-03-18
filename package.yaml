@@ -17,6 +17,9 @@ dependencies:
   - parsec
   - random
   - template-haskell
+  - scotty
+  - text
+  - aeson
 
 library:
   source-dirs: lib

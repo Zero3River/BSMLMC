@@ -1,69 +1,46 @@
-
-\section{Wrapping it up in an exectuable}\label{sec:Main} 
-
-We will now use the library form Section \ref{sec:Basics} in a program.
-
 \begin{code}
+
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 module Main where
 
-import ModelChecker
-import Syntax
-import Checker
+import Web.Scotty
+import Data.Text.Lazy (Text)
+import Data.String (fromString)
+import Data.Aeson (FromJSON, ToJSON, Object, encode, decode)
+import Control.Monad.IO.Class (liftIO)
+import GHC.Generics (Generic)
 
-testModel :: KripkeModel
-testModel = KrM 
-    [1, 2, 3]  
-    (\w -> if w == 1 then [1] else if w == 2 then [2] else [3])  
-    [(1, 2), (2, 3)]  
+data Person = Person
+    { name :: String
+    , age :: Int
+    } deriving (Show, Generic, FromJSON, ToJSON)
 
-testFormula1 :: BSMLForm
-testFormula1 = P 1 
-
-testFormula2 :: BSMLForm
-testFormula2 = Dia (P 3)  
-
-testFormula3 :: BSMLForm
-testFormula3 = Neg (P 1) 
-
-testFormula4 :: BSMLForm
-testFormula4 = Con (P 1) NE  
+data Input = Input
+    { universe :: [Integer]
+    , valuation :: [(Integer, [Int])]
+    , relation :: [(Integer, Integer)]
+    , state :: [Integer]
+    , formula :: String
+    , isSupport :: Bool
+    } deriving (Show, Generic, FromJSON, ToJSON)
 
 main :: IO ()
-main = do
-    putStrLn "=== Running BSML Model Checker Tests ==="
-    putStrLn "Kripke Model:"
-    print testModel
-    putStrLn "\nChecking formulas:"
-    print $ ("P 1:", modelCheck testModel [1] testFormula1)  
-    print $ ("$\neg$ P 1:", modelCheck testModel [1] testFormula3) 
-    print $ ("$\Diamond$ P 3:", modelCheck testModel [1] testFormula2) 
-    print $ ("P 1 $\land$ NE:", modelCheck testModel [1] testFormula4)  
-    putStrLn "=== Tests Completed ==="
+main = scotty 3000 $ do
+    get (fromString "/message") $ do
+        text (fromString "Hello from Scotty!")
+    
+    post (fromString "/echo") $ do
+        message <- body
+        text $ fromString $ show message
 
+    post (fromString "/person") $ do
+        person <- jsonData :: ActionM Person
+        json person  -- 自动将Person转换为JSON并返回
+
+    post (fromString "/input") $ do
+        input <- jsonData :: ActionM Input
+        
+        json input
 \end{code}
-
-We can run this program with the commands:
-
-\begin{verbatim}
-stack build
-stack exec bsml_checker
-\end{verbatim}
-
-The output of the program is something like this:
-
-\begin{verbatim}
-
-=== Running BSML Model Checker Tests ===
-Kripke Model:
-KrM [1,2,3] <function> [(1,2),(2,3)]
-
-Checking formulas:
-
-("P 1:", True)
-("$\neg$ P 1:", False)
-("$\Diamond$P 3:", True)
-("P 1 $\land$ NE:", True)
-
-=== Tests Completed ===
-
-\end{verbatim}
