@@ -85,7 +85,8 @@ m =| (Gdis f g) = m =| f && m =| g
 \end{code}
 
 
-A model state pair is indisputable if ....
+A model state pair $(M,s)$ is indisputable if for all  $w,v \in s, R[w] = R[v]$. 
+
 
 \begin{code}
 indisputable :: ModelState -> Bool
@@ -93,7 +94,9 @@ indisputable (KrM _ _ r ,s) = any (\w -> any (\v -> sort (r ! w) == sort (r ! v 
 \end{code}
 
 
-A model state pair is state-based if ...
+A model state pair is state-based if for all $w \in s, R[w] = s$.
+
+
 \begin{code}
 stateBased :: ModelState -> Bool
 stateBased (KrM _ _ r , s) = any (\w -> sort (r ! w) == sort s) s
