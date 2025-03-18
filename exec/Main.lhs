@@ -17,16 +17,16 @@ testModel = KrM
     [(1, 2), (2, 3)]  
 
 testFormula1 :: BSMLForm
-testFormula1 = P 1  -- p1
+testFormula1 = P 1 
 
 testFormula2 :: BSMLForm
-testFormula2 = Dia (P 3)  -- ◇p3
+testFormula2 = Dia (P 3)  
 
 testFormula3 :: BSMLForm
-testFormula3 = Neg (P 1)  -- ¬p1
+testFormula3 = Neg (P 1) 
 
 testFormula4 :: BSMLForm
-testFormula4 = Con (P 1) NE  -- p1 ∧ NE
+testFormula4 = Con (P 1) NE  
 
 main :: IO ()
 main = do
@@ -35,9 +35,9 @@ main = do
     print testModel
     putStrLn "\nChecking formulas:"
     print $ ("P 1:", modelCheck testModel [1] testFormula1)  
-    print $ ("¬P 1:", modelCheck testModel [1] testFormula3) 
-    print $ ("◇P 3:", modelCheck testModel [1] testFormula2) 
-    print $ ("P 1 ∧ NE:", modelCheck testModel [1] testFormula4)  
+    print $ ("$\neg$ P 1:", modelCheck testModel [1] testFormula3) 
+    print $ ("$\Diamond$ P 3:", modelCheck testModel [1] testFormula2) 
+    print $ ("P 1 $\land$ NE:", modelCheck testModel [1] testFormula4)  
     putStrLn "=== Tests Completed ==="
 
 \end{code}
@@ -58,10 +58,11 @@ Kripke Model:
 KrM [1,2,3] <function> [(1,2),(2,3)]
 
 Checking formulas:
+
 ("P 1:", True)
-("¬P 1:", False)
-("◇P 3:", True)
-("P 1 ∧ NE:", True)
+("$\neg$ P 1:", False)
+("$\Diamond$P 3:", True)
+("P 1 $\land$ NE:", True)
 
 === Tests Completed ===
 
