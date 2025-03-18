@@ -2,6 +2,45 @@
 
 \section{The Definiton of Model Checker Data Type}\label{sec:Basics}
 
+
+The semantics of BSML is based on \textit{team semantics}, where formulas are interpreted with respect to sets of possible worlds (called \textit{states}) rather than single worlds. A \textit{model} \(M\) is a triple \((W, R, V)\), where:
+\begin{itemize}
+    \item \(W\) is a nonempty set of possible worlds,
+    \item \(R \subseteq W \times W\) is an accessibility relation,
+    \item \(V: \text{Prop} \to \mathcal{P}(W)\) is a valuation function.
+\end{itemize}
+
+A \textit{state} \(s\) is a subset of \(W\). The support and anti-support conditions for BSML formulas are defined recursively as follows:
+
+\begin{align*}
+M, s &\models p \quad \text{iff} \quad \forall w \in s, w \in V(p) \\
+M, s &\leftmodels p \quad \text{iff} \quad \forall w \in s, w \notin V(p) \\
+M, s &\models \bot \quad \text{iff} \quad s = \emptyset \\
+M, s &\leftmodels \bot \quad \text{always} \\
+M, s &\models \text{NE} \quad \text{iff} \quad s \neq \emptyset \\
+M, s &\leftmodels  \text{NE} \quad \text{iff} \quad s = \emptyset \\
+M, s &\models \neg \varphi \quad \text{iff} \quad M, s \leftmodels \varphi \\
+M, s &\leftmodels  \neg \varphi \quad \text{iff} \quad M, s \models \varphi \\
+M, s &\models \varphi \land \psi \quad \text{iff} \quad M, s \models \varphi \text{ and } M, s \models \psi \\
+M, s &\leftmodels  \varphi \land \psi \quad \text{iff} \quad \exists t, u \subseteq s \text{ s.t. } s = t \cup u \text{ and } M, t \leftmodels \varphi \text{ and } M, u \leftmodels \psi \\
+M, s &\models \varphi \lor \psi \quad \text{iff} \quad \exists t, u \subseteq s \text{ s.t. } s = t \cup u \text{ and } M, t \models \varphi \text{ and } M, u \models \psi \\
+M, s &\leftmodels \varphi \lor \psi \quad \text{iff} \quad M, s \leftmodels \varphi \text{ and } M, s \leftmodels \psi \\
+M, s &\models \varphi \inqdisj \psi \quad \text{iff} \quad M, s \models \varphi \text{ or } M, s \models \psi \\
+M, s &\leftmodels \varphi \inqdisj \psi \quad \text{iff} \quad M, s \leftmodels\varphi \text{ and } M, s \leftmodels \psi\\
+M, s &\models \Diamond \varphi \quad \text{iff} \quad \forall w \in s, \exists t \subseteq R[w] \text{ s.t. } t \neq \emptyset \text{ and } M, t \models \varphi \\
+M, s &\leftmodels  \Diamond \varphi \quad \text{iff} \quad \forall w \in s, M, R[w] \leftmodels \varphi
+\end{align*}
+
+
+The box modality \(\Box\) is defined as the dual of the \(\Diamond\), meaning \(\Box \varphi\) is equivalent to \(\neg \Diamond \neg \varphi\). This leads to the following support and antisupport clauses:
+
+\begin{align*}
+M, s &\models \Box \varphi \quad \text{iff} \quad \forall w \in s, M, R[w] \models \varphi \\
+M, s &\leftmodels  \Box \varphi \quad \text{iff} \quad  \forall w \in s, \exists t \subseteq R[w] \text{ s.t. } t \neq \emptyset \text{ and } M, t \leftmodels \varphi 
+\end{align*}
+
+
+
 The following is the definition of our Data Type for Model Checker.
 
 \begin{code}

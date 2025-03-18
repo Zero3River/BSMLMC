@@ -1,0 +1,14 @@
+\section{Motivition}\label{Motivition}
+
+BSML was developed to account for \textit{Free Choice} (FC) inferences, where disjunctive sentences give rise to conjunctive interpretations. For example, the sentence ``You may go to the beach or to the cinema'' typically implies that ``You may go to the beach \textit{and} you may go to the cinema'' This inference is unexpected from a classical logical perspective, as disjunction does not typically imply conjunction.
+
+The key idea in BSML is the \textit{neglect-zero tendency}, which posits that humans tend to disregard models that verify sentences by virtue of some empty configuration. BSML formalizes this tendency by introducing the \textit{nonemptiness atom} (NE), which ensures that only nonempty states are considered in the interpretation of sentences. This leads to the prediction of both narrow-scope and wide-scope FC inferences, as well as their cancellation under negation.
+
+BSML has been extended in two ways:
+\begin{itemize}
+    \item \(\textbf{BSML}^{\inqdisj}\): This extension adds the \textit{global disjunction} \(\inqdisj\), which allows for the expression of properties that are invariant under bounded bisimulation.
+    \item \(\textbf{BSML}^{\oslash}\): This extension adds the \textit{emptiness operator} \(\oslash\), which can be used to cancel out the effects of the nonemptiness atom (NE).
+\end{itemize}
+
+These extensions are expressively complete for certain classes of state properties, and natural deduction axiomatizations have been developed for each of these logics.
+
