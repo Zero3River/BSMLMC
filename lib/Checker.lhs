@@ -82,7 +82,23 @@ m |= (Gdis f g) = m |= f || m |= g
 m =| (Dis f g) = m =| f && m =| g
 m =| (Gdis f g) = m =| f && m =| g
 (KrM u v r, s)  =| (Dia f) = all (\w -> (KrM u v r, r ! w) =| f)  s
+\end{code}
 
+
+A model state pair is indisputable if ....
+
+\begin{code}
+indisputable :: ModelState -> Bool
+indisputable (KrM _ _ r ,s) = any (\w -> any (\v -> sort (r ! w) == sort (r ! v )) s ) s
+\end{code}
+
+
+A model state pair is state-based if ...
+\begin{code}
+stateBased :: ModelState -> Bool
+stateBased (KrM _ _ r , s) = any (\w -> sort (r ! w) == sort s) s
+\end{code}
+\begin{code}
 example1 :: KripkeModel
 example1 = KrM [0,1,2] myVal [(0,1), (1,2), (2,1)] where
   myVal 0 = [0]
