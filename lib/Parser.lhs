@@ -9,7 +9,7 @@ import Text.Parsec.String
 import Text.Parsec.Expr
 import Text.Parsec.Token
 import Text.Parsec.Language
-import Checker
+import Semantics
 
 pForm :: Parsec String () BSMLForm
 pForm = spaces >> pCnt <* (spaces >> eof) where

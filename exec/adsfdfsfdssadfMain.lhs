@@ -7,7 +7,7 @@ module Main where
 
 -- import ModelChecker
 import Syntax
-import Checker
+import Semantics
 
 testModel :: KripkeModel
 testModel = KrM 

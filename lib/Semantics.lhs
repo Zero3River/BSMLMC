@@ -45,7 +45,7 @@ The following is the definition of our Data Type for Model Checker.
 
 \begin{code}
 -- {-# LANGUAGE InstanceSigs #-}
-module Checker where
+module Semantics where
 
 
 

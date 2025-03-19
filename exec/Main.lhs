@@ -17,7 +17,7 @@ import Control.Monad.IO.Class (liftIO)
 import GHC.Generics (Generic)
 import Syntax
 import Parser
-import Checker
+import Semantics
 import Data.List
 import Data.Maybe
 import qualified Data.Aeson.Key as Key
