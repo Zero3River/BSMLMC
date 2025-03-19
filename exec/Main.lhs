@@ -10,6 +10,7 @@
 module Main where
 
 import Web.Scotty
+import Network.Wai.Middleware.Cors  -- 引入 CORS 中间件
 import Data.Text.Lazy (Text)
 import Data.Aeson (FromJSON, ToJSON, Object, encode, decode)
 import Data.Aeson (object, (.=))
@@ -73,8 +74,19 @@ checkFormula modelState formulaStr isSupport =
         then modelState |= parsedFormula  -- 支持关系 |=
         else modelState =| parsedFormula  -- 拒绝关系 =|
 
+allowCors = cors (const $ Just appCorsResourcePolicy)
+
+appCorsResourcePolicy :: CorsResourcePolicy
+appCorsResourcePolicy =
+    simpleCorsResourcePolicy
+        { corsMethods = ["OPTIONS", "GET", "PUT", "POST"]
+        , corsRequestHeaders = ["Authorization", "Content-Type"]
+        }
+
 main :: IO ()
-main = scotty 3000 $ do
+main = scotty 3001 $ do
+    middleware allowCors
+
     post "/input" $ do
         input <- jsonData :: ActionM Input
         let modelState = inputToModelState input

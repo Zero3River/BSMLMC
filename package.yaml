@@ -20,6 +20,7 @@ dependencies:
   - scotty
   - text
   - aeson
+  - wai-cors
 
 library:
   source-dirs: lib
