@@ -1,5 +1,6 @@
 
 
+
 \section{Semantics}\label{sec:Semantics}
 
 
@@ -58,6 +59,7 @@ import Test.QuickCheck
 import Data.List
 
 import Syntax
+import Control.Lens (below)
 
 
 type World = Integer
@@ -70,11 +72,14 @@ type Relation = [(World,World)]
 
 data KripkeModel = KrM Universe Valuation Relation
 
-type ModelState = (KripkeModel,State)
+data ModelState = MS KripkeModel State
 
 instance Show KripkeModel where
   show (KrM u v r) = "KrM " ++ show u ++ " " ++ vstr ++ " " ++ show r where
     vstr = "(fromJust . flip lookup " ++ show [(w, v w) | w <- u] ++ ")"
+
+instance Show ModelState where
+  show (MS k s) = "MS " ++ show k ++ " " ++ show s
 
 \end{code}
 
@@ -105,25 +110,68 @@ subsetsNonEmpty (x:xs) =
   in [[x]] ++ rest ++ map (x:) rest
 
 (|=) :: ModelState -> BSMLForm -> Bool
-(KrM _ v _, s) |= (P p) = all (\w -> p `elem` v w) s
-(_, s) |= Bot = null s
-(_, s) |= NE = not $ null s
-(KrM u v r, s) |= (Neg f) = (KrM u v r, s) =| f
+(MS (KrM _ v _) s) |= (P p) = all (\w -> p `elem` v w) s
+(MS _ s) |= Bot = null s
+(MS _ s) |= NE = not $ null s
+(MS (KrM u v r) s) |= (Neg f) = (MS (KrM u v r) s) =| f
 m |= (Con f g) = m |= f && m |= g
-(k, s) |= (Dis f g) = any (\(ts,us) -> (k, ts) |= f && (k, us) |= g) (allPairs s)
+(MS k s) |= (Dis f g) = any (\(ts,us) -> (MS k ts) |= f && (MS k us) |= g) (allPairs s)
 m |= (Gdis f g) = m |= f || m |= g
-(KrM u v r, s) |= (Dia f) = all (\w -> any (\l -> (KrM u v r,l) |= f ) (subsetsNonEmpty (r ! w)))  s
+(MS (KrM u v r) s) |= (Dia f) = all (\w -> any (\l -> (MS (KrM u v r) l) |= f ) (subsetsNonEmpty (r ! w)))  s
+
 
 
 (=|) :: ModelState -> BSMLForm -> Bool
-(KrM _ v _, s) =| (P p) = all (\w -> p `notElem` v w) s
-(_, _) =| Bot = True
-(_, s) =| NE = null s
-(KrM u v r, s) =| (Neg f) = (KrM u v r, s) |= f
-(k, s) =| (Con f g) = any (\(ts,us) -> (k, ts) =| f && (k, us) =| g) (allPairs s)
+(MS (KrM _ v _) s) =| (P p) = all (\w -> p `notElem` v w) s
+(MS _ _) =| Bot = True
+(MS _ s) =| NE = null s
+(MS (KrM u v r) s) =| (Neg f) = (MS (KrM u v r) s) |= f
+(MS k s) =| (Con f g) = any (\(ts,us) -> (MS k ts) =| f && (MS k us) =| g) (allPairs s)
 m =| (Dis f g) = m =| f && m =| g
 m =| (Gdis f g) = m =| f && m =| g
-(KrM u v r, s)  =| (Dia f) = all (\w -> (KrM u v r, r ! w) =| f)  s
+(MS (KrM u v r) s)  =| (Dia f) = all (\w -> (MS (KrM u v r) (r ! w)) =| f)  s
+\end{code}
+
+
+The following provide QuickCheck properties for the ModelState.
+\begin{code}
+-- Based on homework 
+
+instance Arbitrary ModelState where
+  arbitrary = sized modelStateGen
+
+modelStateGen :: Int -> Gen ModelState
+modelStateGen n = do
+  model@(KrM u _ _) <- modelGen n
+  state <- sublistOf u  -- 从 universe 中选一个子集作为 state
+  return (MS model state)
+
+modelGen :: Int -> Gen KripkeModel
+modelGen 0 = do
+  let u = [0]  -- 至少有一个世界
+  v <- arbitraryValuation u
+  r <- arbitraryRelation u
+  return $ KrM u v r
+modelGen n = do
+  size <- choose (1, n)
+  let u = [0 .. fromIntegral size - 1]
+  v <- arbitraryValuation u
+  r <- arbitraryRelation u
+  return $ KrM u v r
+
+arbitraryValuation :: Universe -> Gen Valuation
+arbitraryValuation u = do
+  props <- vectorOf (length u) (listOf arbitrary)
+  let val w = props !! fromIntegral w -- function
+  return val
+
+arbitraryRelation :: Universe -> Gen Relation
+arbitraryRelation u = do
+  pairs <- sublistOf [(x, y) | x <- u, y <- u]
+  return (nub pairs)
+
+
+
 \end{code}
 
 
@@ -132,7 +180,7 @@ A model state pair $(M,s)$ is indisputable if for all  $w,v \in s, R[w] = R[v]$.
 
 \begin{code}
 indisputable :: ModelState -> Bool
-indisputable (KrM _ _ r ,s) = any (\w -> any (\v -> sort (r ! w) == sort (r ! v )) s ) s
+indisputable (MS (KrM _ _ r) s) = any (\w -> any (\v -> sort (r ! w) == sort (r ! v )) s ) s
 \end{code}
 
 
@@ -141,7 +189,7 @@ A model state pair is state-based if for all $w \in s, R[w] = s$.
 
 \begin{code}
 stateBased :: ModelState -> Bool
-stateBased (KrM _ _ r , s) = any (\w -> sort (r ! w) == sort s) s
+stateBased (MS (KrM _ _ r)  s) = any (\w -> sort (r ! w) == sort s) s
 \end{code}
 \begin{code}
 example1 :: KripkeModel
@@ -155,10 +203,21 @@ example2 = KrM [0,1] myVal [(0,1), (1,1)] where
   myVal _ = [0, 4]
 
 example11 :: ModelState
-example11 = (example1, [0,1,2])
+example11 = MS example1 [0,1,2]
 
 example12 :: ModelState
-example12 = (example2, [0,1])
+example12 = MS example2 [0,1]
 
+
+\end{code}
+
+The following is a QuickCheck example, change this to a better tautology test.
+
+\begin{code}
+badTautology :: BSMLForm
+badTautology =  Neg(Bot `Con` NE)
+
+prop_tautologyHolds :: ModelState -> Bool
+prop_tautologyHolds m = m |= badTautology
 
 \end{code}

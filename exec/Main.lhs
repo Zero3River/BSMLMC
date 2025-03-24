@@ -47,7 +47,7 @@ data Input = Input
 
 -- 将Input转换为ModelState
 inputToModelState :: Input -> ModelState
-inputToModelState input = (kripkeModel, state')
+inputToModelState input = MS kripkeModel state'
   where
     kripkeModel = KrM universe' valuation' relation'
     universe' = universe input
@@ -90,7 +90,7 @@ main = scotty 3001 $ do
     post "/input" $ do
         input <- jsonData :: ActionM Input
         let modelState = inputToModelState input
-            (kripkeModel, state') = modelState
+            (MS kripkeModel state') = modelState
             KrM universe' valuation' relation' = kripkeModel
             
             -- 解析并检查公式

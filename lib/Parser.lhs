@@ -21,8 +21,9 @@ pForm = spaces >> pCnt <* (spaces >> eof) where
   pGdis = char '/' >> return Gdis
 
   -- Diamond operator has higher precedence than conjunction
-  pDia = try pDiaOp <|> pAtom
-  pDiaOp = spaces >> char '<' >> char '>' >> Dia <$> pAtom
+  pDia = (spaces >> try (pDiaOp <|> pBoxOp)) <|> pAtom
+  pDiaOp = char '<' >> char '>' >> Dia <$> pAtom
+  pBoxOp = char '[' >> char ']' >> box <$> pAtom
   
   -- An atom is a variable, negation, or a parenthesized formula
   pAtom = spaces >> (pBot <|> pNE <|> pVar <|> pNeg <|> (spaces >> char '(' *> pCnt <* char ')' <* spaces))
@@ -34,6 +35,7 @@ pForm = spaces >> pCnt <* (spaces >> eof) where
   pNE = string "ne" >> return NE
 
   -- A negation is '!' followed by an atom
+
   pNeg = char '!' >> Neg <$> pAtom
 
 parseForm :: String -> Either ParseError BSMLForm
