@@ -11,6 +11,7 @@ import Text.Parsec.Token
 import Text.Parsec.Language
 import Semantics
 
+-- Based on the Parsec Homework
 pForm :: Parsec String () BSMLForm
 pForm = spaces >> pCnt <* (spaces >> eof) where
   pCnt =  chainl1 pDia (spaces >> (pGdis <|> pDisj <|> pConj))

@@ -43,7 +43,10 @@ M, s &\leftmodels  \Box \varphi \quad \text{iff} \quad  \forall w \in s, \exists
 
 The following is the definition of our Data Type for Model Checker.
 
+
 \begin{code}
+-- Based on the Homework
+
 -- {-# LANGUAGE InstanceSigs #-}
 module Semantics where
 

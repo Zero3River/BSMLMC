@@ -16,23 +16,22 @@ type Relation = [(World,World)]
 data KripkeModel = KrM Universe Valuation Relation
 type ModelState = (KripkeModel, State)
 
--- Generate Graphviz DOT string
+-- Generate Graphviz DOT string, Based on the Graphviz documentation
 
 generateDot :: ModelState -> String
 generateDot (KrM universe val rel, state) =
   "digraph KripkeModel {\n" ++
   "  node [shape=circle, style=filled, fillcolor=white];\n" ++
-  "  nodesep=1.0;\n" ++  -- 设置节点之间的最小水平间距
-  "  ranksep=1.0;\n" ++  -- 设置同一层级的节点之间的最小垂直间距
-  drawLightBlueSubgraph (filter (`elem` state) universe) ++  -- 创建深色节点的子图
-  concatMap drawWorld (universe \\ state) ++  -- 处理剩下的白色节点
+  "  nodesep=1.0;\n" ++  
+  "  ranksep=1.0;\n" ++  
+  drawLightBlueSubgraph (filter (`elem` state) universe) ++  
+  concatMap drawWorld (universe \\ state) ++ 
   concatMap drawRelation rel ++
   "}\n"
   where
-    -- 处理深色节点的子图
     drawLightBlueSubgraph :: [Integer] -> String
     drawLightBlueSubgraph lightBlueNodes =
-      if null lightBlueNodes then ""  -- 如果没有深色节点，返回空字符串
+      if null lightBlueNodes then "" 
       else
         "  subgraph cluster_lightblue {\n" ++
         "    node [fillcolor=lightblue];\n" ++
@@ -40,7 +39,6 @@ generateDot (KrM universe val rel, state) =
         concatMap drawWorld lightBlueNodes ++
         "  }\n"
 
-    -- 画每个节点
     drawWorld w =
         let color :: String
             color = if w `elem` state then "lightblue" else "white"
@@ -48,7 +46,6 @@ generateDot (KrM universe val rel, state) =
             label = printf "W%d\n%s" w (show (val w))
         in printf "  %d [label=\"%s\", fillcolor=%s];\n" w label color
 
-    -- 画每条关系
     drawRelation (w1, w2) = printf "  %d -> %d;\n" w1 w2
 
 
