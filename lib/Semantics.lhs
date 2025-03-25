@@ -143,12 +143,12 @@ instance Arbitrary ModelState where
 modelStateGen :: Int -> Gen ModelState
 modelStateGen n = do
   model@(KrM u _ _) <- modelGen n
-  state <- sublistOf u  -- 从 universe 中选一个子集作为 state
+  state <- sublistOf u  -- choose a set from universe as state
   return (MS model state)
 
 modelGen :: Int -> Gen KripkeModel
 modelGen 0 = do
-  let u = [0]  -- 至少有一个世界
+  let u = [0]  -- at least one world
   v <- arbitraryValuation u
   r <- arbitraryRelation u
   return $ KrM u v r
