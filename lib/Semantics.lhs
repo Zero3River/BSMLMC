@@ -4,43 +4,65 @@
 \section{Semantics}\label{sec:Semantics}
 
 
-The semantics of BSML is based on \textit{team semantics}, where formulas are interpreted with respect to sets of possible worlds (called \textit{states}) rather than single worlds. A \textit{model} \(M\) is a triple \((W, R, V)\), where:
+The semantics of BSML is based on \textit{team semantics}, where formulas are interpreted with respect to sets of possible worlds, which called \textit{states} or \textit{teams} rather than single worlds. A \textit{model} \(M\) is a triple \((W, R, V)\), where:
+
 \begin{itemize}
     \item \(W\) is a nonempty set of possible worlds,
     \item \(R \subseteq W \times W\) is an accessibility relation,
     \item \(V: \text{Prop} \to \mathcal{P}(W)\) is a valuation function.
 \end{itemize}
 
-A \textit{state} \(s\) is a subset of \(W\). The support and anti-support conditions for BSML formulas are defined recursively as follows:
+A \textit{state} \(s\) is a subset of \(W\), interpreted as an information state. The semantics of $\BSML$ is bilateral, with separate conditions for support $(\models)$, meaning assertion, and anti-support $(\leftmodels)$, meaning rejection. The conditions are defined recursively as follows:
 
-\begin{align*}
-M, s &\models p \quad \text{iff} \quad \forall w \in s, w \in V(p) \\
-M, s &\leftmodels p \quad \text{iff} \quad \forall w \in s, w \notin V(p) \\
-M, s &\models \bot \quad \text{iff} \quad s = \emptyset \\
-M, s &\leftmodels \bot \quad \text{always} \\
-M, s &\models \text{NE} \quad \text{iff} \quad s \neq \emptyset \\
-M, s &\leftmodels  \text{NE} \quad \text{iff} \quad s = \emptyset \\
-M, s &\models \neg \varphi \quad \text{iff} \quad M, s \leftmodels \varphi \\
-M, s &\leftmodels  \neg \varphi \quad \text{iff} \quad M, s \models \varphi \\
-M, s &\models \varphi \land \psi \quad \text{iff} \quad M, s \models \varphi \text{ and } M, s \models \psi \\
-M, s &\leftmodels  \varphi \land \psi \quad \text{iff} \quad \exists t, u \subseteq s \text{ s.t. } s = t \cup u \text{ and } M, t \leftmodels \varphi \text{ and } M, u \leftmodels \psi \\
-M, s &\models \varphi \lor \psi \quad \text{iff} \quad \exists t, u \subseteq s \text{ s.t. } s = t \cup u \text{ and } M, t \models \varphi \text{ and } M, u \models \psi \\
-M, s &\leftmodels \varphi \lor \psi \quad \text{iff} \quad M, s \leftmodels \varphi \text{ and } M, s \leftmodels \psi \\
+\[
+\begin{array}{l c l}
+M, s \models p & \text{iff} & \forall w \in s, w \in V(p) \\
+M, s \leftmodels p & \text{iff} & \forall w \in s, w \notin V(p) \\
+\\
+M, s \models \bot & \text{iff} & s = \emptyset \\
+M, s \leftmodels \bot & & \text{always} \\
+\\
+%M, s \models \text{NE} & \text{iff} & s \neq \emptyset \\
+%M, s \leftmodels  \text{NE} & \text{iff} & s = \emptyset \\
+M, s \models \neg \varphi & \text{iff} & M, s \leftmodels \varphi \\
+M, s \leftmodels  \neg \varphi & \text{iff} & M, s \models \varphi \\
+\end{array}
+\]
+
+An atomic proposition is supported at a state if it holds at every world of that state, and is anti-supported if every world falsifies it. From this, we can already see that $\leftmodels$ is not the same as $\not \models$. This extends to the clauses for falsum $\bot$. Negation is then defined in terms of anti-support. 
+\[
+\begin{array}{l c l}
+M, s \models \varphi \land \psi & \text{iff} & M, s \models \varphi \text{ and } M, s \models \psi \\
+M, s \leftmodels  \varphi \land \psi & \text{iff} & \exists t, u \subseteq s \text{ s.t. } s = t \cup u \text{ and } M, t \leftmodels \varphi \text{ and } M, u \leftmodels \psi \\
+M, s \models \varphi \lor \psi & \text{iff} & \exists t, u \subseteq s \text{ s.t. } s = t \cup u \text{ and } M, t \models \varphi \text{ and } M, u \models \psi \\
+M, s \leftmodels \varphi \lor \psi & \text{iff} & M, s \leftmodels \varphi \text{ and } M, s \leftmodels \psi
+\end{array}
+\]
+A state supports a disjunction if it is a union of two substates, each supporting one of the disjuncts. The intuition is that a disjunction is supported when the information state contains evidence for both of the disjuncts. This is also known as \textit{split disjunction}, since it requires splitting the state into substates. Dually, a conjunction is anti-suported when there is evidence falsifying both of the conjuncts.
+\[
+\begin{array}{l c l}
+M, s \models \Diamond \varphi & \text{iff} & \forall w \in s, \exists t \subseteq R[w] \text{ s.t. } t \neq \emptyset \text{ and } M, t \models \varphi \\
+M, s \leftmodels  \Diamond \varphi & \text{iff} & \forall w \in s, \ M, R[w] \leftmodels \varphi \\
+\\
+M, s \models \Box \varphi & \text{iff} & \forall w \in s, \ M, R[w] \models \varphi \\
+M, s \leftmodels  \Box \varphi & \text{iff} & \forall w \in s, \exists t \subseteq R[w] \text{ s.t. } t \neq \emptyset \text{ and } M, t \leftmodels \varphi 
+\end{array}
+\]
+A state supports a diamond formula $\Diamond \varphi$ if each word sees a (non-empty) state supporting $\varphi$; A state anti-supports $\Diamond \varphi$ if all worlds accessible from the state together anti-supports $\varphi$. The clauses for $\Box$ are derived from the clauses for $\neg$ and $\Diamond$. 
+\[
+\begin{array}{l c l}
+M, s \models \text{NE} & \text{iff} & s \neq \emptyset \\
+M, s \leftmodels  \text{NE} & \text{iff} & s = \emptyset
+\end{array}
+\]
+As the name suggests, the nonemptiness atom is supported when the state is empty, and is rejected otherwise. When combined with disjunction in the form of pragmatic enrichment, a state supports an enriched disjunction $[\varphi \vee \psi]^+$ when it is a union of two \textit{non-empty}substates, each supporting one of the disjuncts. This is what enables $\BSML$ to derive FC inferences.
+\[
+\begin{array}{l c l}
 M, s &\models \varphi \inqdisj \psi \quad \text{iff} \quad M, s \models \varphi \text{ or } M, s \models \psi \\
 M, s &\leftmodels \varphi \inqdisj \psi \quad \text{iff} \quad M, s \leftmodels\varphi \text{ and } M, s \leftmodels \psi\\
-M, s &\models \Diamond \varphi \quad \text{iff} \quad \forall w \in s, \exists t \subseteq R[w] \text{ s.t. } t \neq \emptyset \text{ and } M, t \models \varphi \\
-M, s &\leftmodels  \Diamond \varphi \quad \text{iff} \quad \forall w \in s, M, R[w] \leftmodels \varphi
-\end{align*}
-
-
-The box modality \(\Box\) is defined as the dual of the \(\Diamond\), meaning \(\Box \varphi\) is equivalent to \(\neg \Diamond \neg \varphi\). This leads to the following support and antisupport clauses:
-
-\begin{align*}
-M, s &\models \Box \varphi \quad \text{iff} \quad \forall w \in s, M, R[w] \models \varphi \\
-M, s &\leftmodels  \Box \varphi \quad \text{iff} \quad  \forall w \in s, \exists t \subseteq R[w] \text{ s.t. } t \neq \emptyset \text{ and } M, t \leftmodels \varphi 
-\end{align*}
-
-
+\end{array}
+\]
+more to add...
 
 The following is the definition of our Data Type for Model Checker.
 
