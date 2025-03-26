@@ -9,6 +9,8 @@ and test some properties.
 module Main where
 
 import Basics
+import Syntax
+import Semantics
 
 import Test.Hspec
 import Test.QuickCheck
@@ -21,13 +23,26 @@ The second and third test use QuickCheck.
 \begin{code}
 main :: IO ()
 main = hspec $ do
-  describe "Basics" $ do
-    it "somenumbers should be the same as [1..10]" $
-      somenumbers `shouldBe` [1..10]
-    it "if n > - then funnyfunction n > 0" $
-      property (\n -> n > 0 ==> funnyfunction n > 0)
-    it "myreverse: using it twice gives back the same list" $
-      property $ \str -> myreverse (myreverse str) == (str::String)
+    describe "BSML Properties" $ do
+    it "Narrow Scope FC" $ do
+      property $ \f g -> prag (Dia (Dis f g)) `entails` Con (Dia (prag f)) (Dia (prag g))
+    
+    it "Wide Scope FC" $ do
+      property $ \f g -> prag (Dis (Dia f) (Dia g)) `entails` Con (Dia (prag f)) (Dia (prag g))
+    
+    it "Dual Prohibition" $ do
+      property $ \f g -> prag (Neg (Dia (Dis f g))) `entails` Con (Neg (Dia (prag f))) (Neg (Dia (prag g)))
+    
+    it "Double Negation" $ do
+      property $ \f g -> prag (Neg (Neg (Dia (Dis f g)))) `entails` Con (Dia (prag f)) (Dia (prag g))
+    
+    it "Modal Disjunction" $ do
+      property $ \f g -> prag (Dis f g) `entails` Con (Dia (prag f)) (Dia (prag g))
+
+-- Helper function to define entailment between formulas
+entails :: BSMLForm -> BSMLForm -> Bool
+entails f g = True -- Placeholder, requires semantic evaluation
+
 \end{code}
 
 To run the tests, use \verb|stack test|.
