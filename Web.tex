@@ -2,7 +2,7 @@
 
 To enhance the usability of the BSML model checker, we have developed a web-based interface using Haskell for the backend and various modern web technologies for the frontend. The web application allows users to input modal logic formulas, visualize Kripke models, and dynamically view verification results. The process works as follows:
 
-We implemented the frontend using Next.js, KaTeX, and HTML5 Canvas. Users can enter models, states, and formulas through input fields, and the web application submits model-checking queries via HTTP requests to the backend.
+We implemented the frontend using Next.js, KaTeX \cite{katex}, and HTML5 Canvas \cite{html5_canvas}. Users can enter models, states, and formulas through input fields, and the web application submits model-checking queries via HTTP requests to the backend.
 
 On the backend, we use Scotty, a lightweight Haskell web framework, to handle requests from the frontend and run the model checker. Once the computation is complete, the backend returns the verification result (True/False) to the frontend.
 
@@ -80,7 +80,7 @@ parseForm' s = case parseForm s of
 \end{code}
 
 \subsection{Web server configuration}
-The server is built using Scotty and listens for POST requests at /input:
+The server is built using Scotty \cite{scotty} and listens for POST requests at /input:
 
 \begin{code}
 main :: IO ()
@@ -120,15 +120,6 @@ main = scotty 3001 $ do
 
 
 \subsection{Usage}
-To run the backend server, execute:
-\begin{code}
-stack exec/Main.lhs
-\end{code}
-	
-For the frontend, navigate to the Next.js project directory and run:
-\begin{code}
-pnpm install
-pnpm dev
-\end{code}
-	
-This will start the frontend at \url{http://localhost:3001}, where users can interact with the system.
+Our BSML model checker web application is accessible at https://bsmlmc.seit.me.
+
+Here we give an example to illustrate how to use the web application.
