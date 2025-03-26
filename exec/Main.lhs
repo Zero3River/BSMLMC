@@ -10,7 +10,7 @@
 module Main where
 
 import Web.Scotty
-import Network.Wai.Middleware.Cors  -- 引入 CORS 中间件
+import Network.Wai.Middleware.Cors
 import Data.Text.Lazy (Text)
 import Data.Aeson (FromJSON, ToJSON, Object, encode, decode)
 import Data.Aeson (object, (.=))
@@ -27,6 +27,7 @@ import Text.Parsec.String
 import Text.Parsec.Expr
 import Text.Parsec.Token
 import Text.Parsec.Language
+import Test.QuickCheck
 
 data Person = Person
     { name :: String
@@ -40,39 +41,46 @@ data Input = Input
     , state :: [Integer]
     , formula :: String
     , isSupport :: Bool
+    , isPrag :: Bool
     } deriving (Show, Generic, FromJSON, ToJSON)
 
+data InputQuickCheck = InputQuickCheck
+    {
+      formulaL :: String
+      , formulaR :: String
+      , isPragL :: Bool
+      , isPragR :: Bool
+    }  deriving (Show, Generic, FromJSON, ToJSON)
 
 
-
--- 将Input转换为ModelState
+-- Turne Input into ModelState
 inputToModelState :: Input -> ModelState
 inputToModelState input = MS kripkeModel state'
   where
     kripkeModel = KrM universe' valuation' relation'
     universe' = universe input
     
-    -- 转换valuation成为一个函数
+    -- turn valuation into function
     valuation' :: Valuation
     valuation' world = case lookup world (valuation input) of
                          Just props -> props
                          Nothing -> []
     
-    -- 将关系列表直接转换
+    -- unmarshal relation
     relation' = relation input
     
-    -- 从输入中获取状态
+    -- unmarshal state
     state' = state input
 
--- 检查公式是否在给定的模型状态下成立
-checkFormula :: ModelState -> String -> Bool -> Bool
-checkFormula modelState formulaStr isSupport = 
-  case parseForm formulaStr of
-    Left err -> error $ "解析公式错误: " ++ show err
-    Right parsedFormula -> 
-      if isSupport
-        then modelState |= parsedFormula  -- 支持关系 |=
-        else modelState =| parsedFormula  -- 拒绝关系 =|
+-- Check if formula is supported
+-- checkFormula :: ModelState -> String -> Bool -> Bool
+-- checkFormula modelState formulaStr isSupport = 
+--   case parseForm formulaStr of
+--     Left err -> error $ "Error in parsing formula: " ++ show err
+--     Right parsedFormula -> 
+--       if isSupport
+--         then modelState |= parsedFormula
+--         else modelState =| parsedFormula 
 
 allowCors = cors (const $ Just appCorsResourcePolicy)
 
@@ -82,6 +90,11 @@ appCorsResourcePolicy =
         { corsMethods = ["OPTIONS", "GET", "PUT", "POST"]
         , corsRequestHeaders = ["Authorization", "Content-Type"]
         }
+
+
+prop_implicationHolds :: BSMLForm -> BSMLForm -> ModelState -> Bool
+prop_implicationHolds f1 f2 m =
+  not (m |= f1) || (m |= f2)
 
 main :: IO ()
 main = scotty 3001 $ do
@@ -93,14 +106,15 @@ main = scotty 3001 $ do
             (MS kripkeModel state') = modelState
             KrM universe' valuation' relation' = kripkeModel
             
-            -- 解析并检查公式
+            -- Parse and Check Formula
             result = do
               parsedFormula <- parseForm (formula input)
+              let finalFormula = if isPrag input then prag parsedFormula else parsedFormula
               return $ if isSupport input
-                         then modelState |= parsedFormula  -- 支持关系
-                         else modelState =| parsedFormula  -- 拒绝关系
+                         then modelState |= finalFormula
+                         else modelState =| finalFormula
                          
-            -- 根据解析结果生成响应
+            -- Generate response
             finalResult = case result of
               Left err -> object [
                   "error" .= show err
@@ -116,4 +130,47 @@ main = scotty 3001 $ do
                 ]
             
         json finalResult
+    post "/quickcheck" $ do
+        inputQuickCheck <- jsonData :: ActionM InputQuickCheck
+
+        -- Parse both formulas
+        let pf1 = parseForm (formulaL inputQuickCheck)
+            pf2 = parseForm (formulaR inputQuickCheck)
+
+        case (pf1, pf2) of
+          (Right f1, Right f2) -> do
+            let finalF1 = if isPragL inputQuickCheck then prag f1 else f1
+                finalF2 = if isPragR inputQuickCheck then prag f2 else f2
+
+                prop m = prop_implicationHolds finalF1 finalF2 m
+
+            result <- liftIO $ quickCheckWithResult stdArgs { maxSuccess = 30 } prop
+
+            let jsonResult = case result of
+                  Success {} -> object [
+                      "status" .= ("passed" :: String),
+                      "numTests" .= numTests result
+                    ]
+                  GaveUp {} -> object [
+                      "status" .= ("gave up" :: String),
+                      "reason" .= reason result
+                    ]
+                  Failure { output = out, usedSeed = s } -> object [
+                      "status" .= ("failed" :: String),
+                      "reason" .= reason result,
+                      "output" .= out
+                    ]
+                  NoExpectedFailure {} -> object [
+                      "status" .= ("unexpected success" :: String)
+                    ]
+
+            json jsonResult
+
+          _ -> json $ object [
+              "status" .= ("parse error" :: String),
+              "errorL" .= show pf1,
+              "errorR" .= show pf2
+            ]
+          
+
 \end{code}
