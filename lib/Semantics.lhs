@@ -94,8 +94,7 @@ type Relation = [(World,World)]
 
 data KripkeModel = KrM Universe Valuation Relation
 
-data ModelState = MS {model :: KripkeModel
-                    , state :: State}
+data ModelState = MS KripkeModel State
 
 instance Show KripkeModel where
   show (KrM u v r) = "KrM " ++ show u ++ " " ++ vstr ++ " " ++ show r where

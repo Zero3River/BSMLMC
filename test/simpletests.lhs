@@ -24,20 +24,20 @@ The second and third test use QuickCheck.
 main :: IO ()
 main = hspec $ do
     describe "BSML Properties" $ do
-    it "Narrow Scope FC" $
-      property $ \(MS m s) -> (m,s) |= prag (Dia (Dis p q)) ==> (m,s) |= Con (Dia p) (Dia q)
+      it "Narrow Scope FC" $
+        property $ \ms@(MS m s) -> ms |= prag (Dia (Dis p q)) ==> ms |= Con (Dia p) (Dia q)
     
-    it "Wide Scope FC" $
-      property $ \ms@(MS m s) -> isIndisputable ms ==> (m,s) |= prag (Dis (Dia p) (Dia q)) ==> (m,s) |= Con (Dia p) (Dia q)
+      it "Wide Scope FC" $
+        property $ \ms@(MS m s) -> isIndisputable ms ==> ms|= prag (Dis (Dia p) (Dia q)) ==> ms |= Con (Dia p) (Dia q)
     
-    it "Dual Prohibition" $
-      property $ \(MS m s) -> (m,s) |= prag (Neg (Dia p q)) ==> (m,s) |= Con (Neg $ Dia p) (Neg $ Dia q)
+      it "Dual Prohibition" $
+        property $ \ms@(MS m s) -> ms |= prag (Neg (Dis p q)) ==> ms |= Con (Neg $ Dia p) (Neg $ Dia q)
     
-    it "Double Negation" $
-      property $ \(MS m s) -> (m,s) |= prag (Neg . Neg . Dia $ Con p q) ==> (m,s) |= Con (Dia p) (Dia q)
+      it "Double Negation" $
+        property $ \ms@(MS m s) -> ms |= prag (Neg . Neg . Dia $ Con p q) ==> ms |= Con (Dia p) (Dia q)
     
-    it "Modal Disjunction" $
-      property $ \ms@(MS m s) -> isStateBased ms ==> (m,s) |= prag (Dis p q) ==> (m,s) |= Con (Dia p) (Dia q)
+      it "Modal Disjunction" $
+        property $ \ms@(MS m s) -> isStateBased ms ==> ms |= prag (Dis p q) ==> ms |= Con (Dia p) (Dia q)
     where
       p = P 1
       q = P 2
