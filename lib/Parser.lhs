@@ -14,16 +14,16 @@ import Semantics
 -- Based on the Parsec Homework
 pForm :: Parsec String () BSMLForm
 pForm = spaces >> pCnt <* (spaces >> eof) where
-  pCnt =  chainl1 pDia (spaces >> (pGdis <|> pDisj <|> pConj))
+  pCnt =  chainl1 pDiaBox (spaces >> (pGdis <|> pDisj <|> pConj))
   
   pConj = char '&' >> return Con
   pDisj = char '|' >> return Dis
   pGdis = char '/' >> return Gdis
 
   -- Diamond operator has higher precedence than conjunction
-  pDia = (spaces >> try (pDiaOp <|> pBoxOp)) <|> pAtom
-  pDiaOp = char '<' >> char '>' >> Dia <$> pAtom
-  pBoxOp = char '[' >> char ']' >> box <$> pAtom
+  pDiaBox = (spaces >> try (pDiaOp <|> pBoxOp)) <|> pAtom
+  pDiaOp = char '<' >> char '>' >> Dia <$> pDiaBox
+  pBoxOp = char '[' >> char ']' >> box <$> pDiaBox
   
   -- An atom is a variable, negation, or a parenthesized formula
   pAtom = spaces >> (pBot <|> pNE <|> pVar <|> pNeg <|> (spaces >> char '(' *> pCnt <* char ')' <* spaces))
@@ -36,7 +36,7 @@ pForm = spaces >> pCnt <* (spaces >> eof) where
 
   -- A negation is '!' followed by an atom
 
-  pNeg = char '!' >> Neg <$> pAtom
+  pNeg = char '!' >> Neg <$> pDiaBox
 
 parseForm :: String -> Either ParseError BSMLForm
 parseForm = parse pForm "input"
