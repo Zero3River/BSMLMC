@@ -94,7 +94,8 @@ type Relation = [(World,World)]
 
 data KripkeModel = KrM Universe Valuation Relation
 
-data ModelState = MS KripkeModel State
+data ModelState = MS {model :: KripkeModel
+                    , state :: State}
 
 instance Show KripkeModel where
   show (KrM u v r) = "KrM " ++ show u ++ " " ++ vstr ++ " " ++ show r where
@@ -201,8 +202,8 @@ A model state pair $(M,s)$ is indisputable if for all  $w,v \in s, R[w] = R[v]$.
 
 
 \begin{code}
-indisputable :: ModelState -> Bool
-indisputable (MS (KrM _ _ r) s) = any (\w -> any (\v -> sort (r ! w) == sort (r ! v )) s ) s
+isIndisputable :: ModelState -> Bool
+isIndisputable (MS (KrM _ _ r) s) = any (\w -> any (\v -> sort (r ! w) == sort (r ! v )) s ) s
 \end{code}
 
 
@@ -210,8 +211,8 @@ A model state pair is state-based if for all $w \in s, R[w] = s$.
 
 
 \begin{code}
-stateBased :: ModelState -> Bool
-stateBased (MS (KrM _ _ r)  s) = any (\w -> sort (r ! w) == sort s) s
+isStateBased :: ModelState -> Bool
+isStateBased (MS (KrM _ _ r)  s) = any (\w -> sort (r ! w) == sort s) s
 \end{code}
 \begin{code}
 example1 :: KripkeModel

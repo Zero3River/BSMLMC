@@ -24,20 +24,23 @@ The second and third test use QuickCheck.
 main :: IO ()
 main = hspec $ do
     describe "BSML Properties" $ do
-    it "Narrow Scope FC" $ do
-      property $ \f g -> prag (Dia (Dis f g)) `entails` Con (Dia (prag f)) (Dia (prag g))
+    it "Narrow Scope FC" $
+      property $ \(MS m s) -> (m,s) |= prag (Dia (Dis p q)) ==> (m,s) |= Con (Dia p) (Dia q)
     
-    it "Wide Scope FC" $ do
-      property $ \f g -> prag (Dis (Dia f) (Dia g)) `entails` Con (Dia (prag f)) (Dia (prag g))
+    it "Wide Scope FC" $
+      property $ \ms@(MS m s) -> isIndisputable ms ==> (m,s) |= prag (Dis (Dia p) (Dia q)) ==> (m,s) |= Con (Dia p) (Dia q)
     
-    it "Dual Prohibition" $ do
-      property $ \f g -> prag (Neg (Dia (Dis f g))) `entails` Con (Neg (Dia (prag f))) (Neg (Dia (prag g)))
+    it "Dual Prohibition" $
+      property $ \(MS m s) -> (m,s) |= prag (Neg (Dia p q)) ==> (m,s) |= Con (Neg $ Dia p) (Neg $ Dia q)
     
-    it "Double Negation" $ do
-      property $ \f g -> prag (Neg (Neg (Dia (Dis f g)))) `entails` Con (Dia (prag f)) (Dia (prag g))
+    it "Double Negation" $
+      property $ \(MS m s) -> (m,s) |= prag (Neg . Neg . Dia $ Con p q) ==> (m,s) |= Con (Dia p) (Dia q)
     
-    it "Modal Disjunction" $ do
-      property $ \f g -> prag (Dis f g) `entails` Con (Dia (prag f)) (Dia (prag g))
+    it "Modal Disjunction" $
+      property $ \ms@(MS m s) -> isStateBased ms ==> (m,s) |= prag (Dis p q) ==> (m,s) |= Con (Dia p) (Dia q)
+    where
+      p = P 1
+      q = P 2
 
 -- Helper function to define entailment between formulas
 entails :: BSMLForm -> BSMLForm -> Bool
