@@ -14,7 +14,7 @@ import Semantics
 import Test.Hspec
 import Test.QuickCheck
 import Test.Hspec.QuickCheck
-import Semantics (ms3a22)
+
 
 \end{code}
 
@@ -41,6 +41,8 @@ main = hspec $ do
         isIndisputable ms3a22 `shouldBe` True   
       it "Figure 2(a), Aloni2022  [wa,wb] is not state-based" $
         isStateBased ms3a22 `shouldBe` False      
+      it "State-basedness implies indisputability" $
+        property $ \ms -> isStateBased ms ==> isIndisputable ms
       it "Narrow Scope FC" $
         property $ \ms -> ms |= prag (Dia (Dis p q)) ==> ms |= Con (Dia p) (Dia q)    
       it "Wide Scope FC" $

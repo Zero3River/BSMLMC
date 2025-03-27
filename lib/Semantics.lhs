@@ -194,7 +194,7 @@ A model state pair $(M,s)$ is indisputable if for all  $w,v \in s, R[w] = R[v]$.
 
 \begin{code}
 isIndisputable :: ModelState -> Bool
-isIndisputable (MS (KrM _ _ r) s) = any (\w -> any (\v -> sort (r ! w) == sort (r ! v )) s ) s
+isIndisputable (MS (KrM _ _ r) s) = all (\w -> all (\v -> sort (r ! w) == sort (r ! v )) s ) s
 \end{code}
 
 
@@ -203,7 +203,7 @@ A model state pair is state-based if for all $w \in s, R[w] = s$.
 
 \begin{code}
 isStateBased :: ModelState -> Bool
-isStateBased (MS (KrM _ _ r)  s) = any (\w -> sort (r ! w) == sort s) s
+isStateBased (MS (KrM _ _ r)  s) = all (\w -> sort (r ! w) == sort s) s
 \end{code}
 \begin{code}
 example1 :: KripkeModel
@@ -275,6 +275,17 @@ m3a22 = KrM [w0,wa,wb,wab] val3a22 rel3a22
 
 ms3a22 :: ModelState
 ms3a22 = MS m3a22 [wa,wb]
+
+counterexamplews1 :: ModelState
+counterexamplews1 = MS (KrM [0,1,2,3,4] (fromJust . flip lookup [(0,[0,4,6,8,9,10]),(1,[1,4,6,8]),(2,[0,3,5,8,9]),(3,[0,1,4,6,8]),(4,[1,2,3,7,8])]) [(0,0),(1,1),(1,4),(2,1),(2,4),(3,1),(3,2),(4,1)] ) [0,2,3]
+
+counterexamplewmd :: ModelState
+counterexamplewmd = MS (KrM [0,1,2] (fromJust . flip lookup [(0,[1,3,4,7,9]),(1,[0,2,6,7,8,9,10]),(2,[1,6,8,9])]) [(1,0),(1,1),(2,1),(2,2)]) [0,1]
+
+p :: BSMLForm
+p = P 0
+q :: BSMLForm
+q = P 1
 \end{code}
 
 The following is a QuickCheck example, change this to a better tautology test.
