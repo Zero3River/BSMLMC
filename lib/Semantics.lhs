@@ -225,14 +225,14 @@ example12 = MS example2 [0,1]
 
 \end{code}
 
-Here, we encode the example in Figure 2, \cite{Aloni2018}:
+Here, we encode the example in Figure 2, \cite{Aloni2018}. Here, \texttt{a = P 2, b = P 3}:
 
 \begin{code}
 w0, wa, wb, wab :: Integer
 (w0, wa, wb, wab) = (0,1,2,3)
 
 val2a18 :: Valuation
-val2a18 = fromJust . flip lookup [(w0,[]), (wa,[1]),(wb,[2]),(wab,[1,2])]
+val2a18 = fromJust . flip lookup [(w0,[]), (wa,[2]),(wb,[3]),(wab,[2,3])]
 
 m2a18 :: KripkeModel
 m2a18 = KrM [w0,wa,wb,wab] val2a18 []
@@ -240,7 +240,41 @@ m2a18 = KrM [w0,wa,wb,wab] val2a18 []
 ms2a18, ms2b18 :: ModelState
 ms2a18 = MS m2a18 [wa, wb]
 ms2b18 = MS m2a18 [wa] 
+\end{code}
 
+Here is another example, from Figure 2(c), \cite{Aloni2024}. Here \texttt{p = P 0, q = P 1}:
+
+\begin{code}
+wp, wq, wpq :: Integer
+(wp, wq, wpq) = (1,2,3) -- same w0 as above
+
+val2c24 :: Valuation
+val2c24 = fromJust . flip lookup [(w0,[]),(wp,[0]),(wq,[1]),(wpq,[0,1])]
+
+rel2c24 :: Relation
+rel2c24 = [(w0,wq), (wpq,wp), (wpq,wq)]
+
+m2c24 :: KripkeModel
+m2c24 = KrM [w0,wp,wq,wpq] val2c24 rel2c24
+
+ms2c241, ms2c242 :: ModelState
+ms2c241 = MS m2c24 [w0]
+ms2c242 = MS m2c24 [wpq] 
+\end{code}
+
+The following example is from Figure 3(a), \cite{Aloni2022}
+\begin{code}
+val3a22 :: Valuation
+val3a22 = val2a18
+
+rel3a22 :: Relation
+rel3a22 = [(wa,w0), (wa,wab), (wb,w0), (wb,wab)]
+
+m3a22 :: KripkeModel
+m3a22 = KrM [w0,wa,wb,wab] val3a22 rel3a22
+
+ms3a22 :: ModelState
+ms3a22 = MS m3a22 [wa,wb]
 \end{code}
 
 The following is a QuickCheck example, change this to a better tautology test.

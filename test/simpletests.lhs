@@ -14,6 +14,7 @@ import Semantics
 import Test.Hspec
 import Test.QuickCheck
 import Test.Hspec.QuickCheck
+import Semantics (ms3a22)
 
 \end{code}
 
@@ -26,28 +27,35 @@ The second and third test use QuickCheck.
 main :: IO ()
 main = hspec $ do
     describe "BSML Properties" $ modifyMaxSize (const 10)$ do
-      it "Figure 2 state (a) |= a V b" $
-         ms2a18 |= Dis a b `shouldBe` True
-
+      it "Figure 2, Aloni2018 [wa,wb] |= a | b" $
+        ms2a18 |= Dis a b `shouldBe` True      
+      it "Figure 2, Aloni2018 [wa,wb] not |= a / b" $
+        ms2a18 |= Gdis a b `shouldBe` False
+      it "Figure 2, Aloni2018 [wa] |= (a | b) & (a / b)" $
+        ms2b18 |= Con (Dis a b) (Gdis a b) `shouldBe` True
+      it "Figure 2(c), Aloni2024  [w0] not |= [<>(p | q)]+" $
+        ms2c241 |= prag (Dia (Dis p q)) `shouldBe` False
+      it "Figure 2(c), Aloni2024  [wpq] |= [<>(p | q)]+" $
+        ms2c241 |= prag (Dia (Dis p q)) `shouldBe` False    
+      it "Figure 2(a), Aloni2022  [wa,wb] is indisputable" $
+        isIndisputable ms3a22 `shouldBe` True   
+      it "Figure 2(a), Aloni2022  [wa,wb] is not state-based" $
+        isStateBased ms3a22 `shouldBe` False      
       it "Narrow Scope FC" $
-        property $ \ms -> ms |= prag (Dia (Dis p q)) == ms |= Con (Dia p) (Dia q)
-    
+        property $ \ms -> ms |= prag (Dia (Dis p q)) ==> ms |= Con (Dia p) (Dia q)    
       it "Wide Scope FC" $
-        property $ \ms -> isIndisputable ms ==> ms|= prag (Dis (Dia p) (Dia q)) ==> ms |= Con (Dia p) (Dia q)
-    
+        property $ \ms -> isIndisputable ms ==> ms |= prag (Dis (Dia p) (Dia q)) ==> ms |= Con (Dia p) (Dia q)    
       it "Dual Prohibition" $
-        property $ \ms -> ms |= prag (Neg (Dis p q)) ==> ms |= Con (Neg $ Dia p) (Neg $ Dia q)
-    
+        property $ \ms -> ms |= prag ((Neg . Dia) (Dis p q)) ==> ms |= Con (Neg (Dia p)) (Neg (Dia q))    
       it "Double Negation" $
-        property $ \ms -> ms |= prag (Neg . Neg . Dia $ Con p q) ==> ms |= Con (Dia p) (Dia q)
-    
+        property $ \ms -> ms |= prag ((Neg . Neg . Dia) (Dis p q)) ==> ms |= Con (Dia p) (Dia q)    
       it "Modal Disjunction" $
         property $ \ms -> isStateBased ms ==> ms |= prag (Dis p q) ==> ms |= Con (Dia p) (Dia q)
     where
         p = P 0
         q = P 1
-        a = P 1
-        b = P 2
+        a = P 2
+        b = P 3
 
 
 \end{code}
