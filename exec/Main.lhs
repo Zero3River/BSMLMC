@@ -11,22 +11,22 @@ module Main where
 
 import Web.Scotty
 import Network.Wai.Middleware.Cors
-import Data.Text.Lazy (Text)
-import Data.Aeson (FromJSON, ToJSON, Object, encode, decode)
-import Data.Aeson (object, (.=))
+-- import Data.Text.Lazy (Text)
+import Data.Aeson (FromJSON, ToJSON, object, (.=))
+-- import Data.Aeson ()
 import Control.Monad.IO.Class (liftIO)
 import GHC.Generics (Generic)
 import Syntax
 import Parser
 import Semantics
-import Data.List
-import Data.Maybe
-import qualified Data.Aeson.Key as Key
-import Text.Parsec
-import Text.Parsec.String
-import Text.Parsec.Expr
-import Text.Parsec.Token
-import Text.Parsec.Language
+-- import Data.List
+-- import Data.Maybe
+-- import qualified Data.Aeson.Key as Key
+-- import Text.Parsec
+-- import Text.Parsec.String
+-- import Text.Parsec.Expr
+-- import Text.Parsec.Token
+-- import Text.Parsec.Language
 import Test.QuickCheck
 
 data Person = Person
@@ -104,7 +104,7 @@ main = scotty 3001 $ do
         input <- jsonData :: ActionM Input
         let modelState = inputToModelState input
             (MS kripkeModel state') = modelState
-            KrM universe' valuation' relation' = kripkeModel
+            KrM _ _ relation' = kripkeModel
             
             -- Parse and Check Formula
             result = do
@@ -155,7 +155,7 @@ main = scotty 3001 $ do
                       "status" .= ("gave up" :: String),
                       "reason" .= reason result
                     ]
-                  Failure { output = out, usedSeed = s } -> object [
+                  Failure { output = out, usedSeed = _ } -> object [
                       "status" .= ("failed" :: String),
                       "reason" .= reason result,
                       "output" .= out

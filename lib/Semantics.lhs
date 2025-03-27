@@ -75,13 +75,13 @@ module Semantics where
 
 
 
-import Control.Monad
-import System.Random
+-- import Control.Monad
+-- import System.Random
 import Test.QuickCheck
 import Data.List
 
 import Syntax
-import Control.Lens (below)
+-- import Control.Lens (below)
 
 
 type World = Integer

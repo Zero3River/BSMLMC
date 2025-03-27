@@ -5,11 +5,11 @@ module Parser where
 
 import Syntax
 import Text.Parsec
-import Text.Parsec.String
-import Text.Parsec.Expr
-import Text.Parsec.Token
-import Text.Parsec.Language
-import Semantics
+-- import Text.Parsec.String
+-- import Text.Parsec.Expr
+-- import Text.Parsec.Token
+-- import Text.Parsec.Language
+-- import Semantics
 
 -- Based on the Parsec Homework
 pForm :: Parsec String () BSMLForm

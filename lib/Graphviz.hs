@@ -1,6 +1,6 @@
 module Graphviz where
 
-import Data.List (intercalate)
+-- import Data.List (intercalate)
 import Text.Printf (printf)
 import Data.List
 -- Types
