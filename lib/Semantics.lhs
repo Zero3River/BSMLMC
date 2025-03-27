@@ -129,26 +129,26 @@ subsetsNonEmpty (x:xs) =
   in [[x]] ++ rest ++ map (x:) rest
 
 (|=) :: ModelState -> BSMLForm -> Bool
-(MS (KrM _ v _) s) |= (P p) = all (\w -> p `elem` v w) s
+(MS (KrM _ v _) s) |= (P n) = all (\w -> n `elem` v w) s
 (MS _ s) |= Bot = null s
 (MS _ s) |= NE = not $ null s
 (MS (KrM u v r) s) |= (Neg f) = MS (KrM u v r) s =| f
 m |= (Con f g) = m |= f && m |= g
-(MS k s) |= (Dis f g) = any (\(ts,us) -> (MS k ts) |= f && (MS k us) |= g) (allPairs s)
+(MS k s) |= (Dis f g) = any (\(ts,us) -> MS k ts |= f && MS k us |= g) (allPairs s)
 m |= (Gdis f g) = m |= f || m |= g
-(MS (KrM u v r) s) |= (Dia f) = all (\w -> any (\l -> (MS (KrM u v r) l) |= f ) (subsetsNonEmpty (r ! w)))  s
+(MS (KrM u v r) s) |= (Dia f) = all (\w -> any (\l -> MS (KrM u v r) l |= f ) (subsetsNonEmpty (r ! w)))  s
 
 
 
 (=|) :: ModelState -> BSMLForm -> Bool
-(MS (KrM _ v _) s) =| (P p) = all (\w -> p `notElem` v w) s
+(MS (KrM _ v _) s) =| (P n) = all (\w -> n `notElem` v w) s
 (MS _ _) =| Bot = True
 (MS _ s) =| NE = null s
-(MS (KrM u v r) s) =| (Neg f) = (MS (KrM u v r) s) |= f
-(MS k s) =| (Con f g) = any (\(ts,us) -> (MS k ts) =| f && (MS k us) =| g) (allPairs s)
+(MS (KrM u v r) s) =| (Neg f) = MS (KrM u v r) s |= f
+(MS k s) =| (Con f g) = any (\(ts,us) -> MS k ts =| f && MS k us =| g) (allPairs s)
 m =| (Dis f g) = m =| f && m =| g
 m =| (Gdis f g) = m =| f && m =| g
-(MS (KrM u v r) s)  =| (Dia f) = all (\w -> (MS (KrM u v r) (r ! w)) =| f)  s
+(MS (KrM u v r) s)  =| (Dia f) = all (\w -> MS (KrM u v r) (r ! w) =| f)  s
 \end{code}
 
 

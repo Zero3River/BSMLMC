@@ -8,7 +8,6 @@ and test some properties.
 \begin{code}
 module Main where
 
-import Basics
 import Syntax
 import Semantics
 import Test.Hspec
