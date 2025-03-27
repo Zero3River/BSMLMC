@@ -41,7 +41,7 @@ The pragmatic enrichment function [\quad]\(^+\): \textbf{ML} \(\rightarrow\) \BS
 {[\alpha \mathrel{\triangle} \beta ]}^+ &\coloneqq ({[\alpha]}^+ \triangle {[\beta]}^+)\land \NE \quad \quad \text{for } \triangle \in \{\land, \lor\}
 \end{align*}
 
-We implment pragmatic enrichment \texttt{prag} as a partial function \texttt{BSMLForm -> BSMLForm}, as the $\textbf{ML}$ formulas are not used anywhere else in this project. 
+We implment pragmatic enrichment \texttt{prag} as a function \texttt{BSMLForm -> BSMLForm}, as the $\textbf{ML}$ formulas are not used anywhere else in this project. 
 \begin{code}
 prag :: BSMLForm -> BSMLForm
 prag (P n)      = Con (P n) NE
@@ -51,6 +51,6 @@ prag (Dis f g)  = Con (Dis (prag f) (prag g)) NE
 prag (Dia f)    = Con (Dia (prag f)) NE
 prag (Gdis f g) = Con (Gdis (prag f) (prag g)) NE
 prag Bot        = Con Bot NE
-prag NE         = error "Cannot pragmatically enrich formulas containing NE"
+prag NE         = NE
 
 \end{code}
