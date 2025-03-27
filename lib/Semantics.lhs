@@ -73,15 +73,12 @@ The following is the definition of our Data Type for Model Checker.
 -- {-# LANGUAGE InstanceSigs #-}
 module Semantics where
 
-
-
--- import Control.Monad
--- import System.Random
 import Test.QuickCheck
 import Data.List
 
 import Syntax
--- import Control.Lens (below)
+import Data.Maybe
+
 
 
 type World = Integer
@@ -135,7 +132,7 @@ subsetsNonEmpty (x:xs) =
 (MS (KrM _ v _) s) |= (P p) = all (\w -> p `elem` v w) s
 (MS _ s) |= Bot = null s
 (MS _ s) |= NE = not $ null s
-(MS (KrM u v r) s) |= (Neg f) = (MS (KrM u v r) s) =| f
+(MS (KrM u v r) s) |= (Neg f) = MS (KrM u v r) s =| f
 m |= (Con f g) = m |= f && m |= g
 (MS k s) |= (Dis f g) = any (\(ts,us) -> (MS k ts) |= f && (MS k us) |= g) (allPairs s)
 m |= (Gdis f g) = m |= f || m |= g
@@ -169,11 +166,6 @@ modelStateGen n = do
   return (MS model state)
 
 modelGen :: Int -> Gen KripkeModel
-modelGen 0 = do
-  let u = [0]  -- at least one world
-  v <- arbitraryValuation u
-  r <- arbitraryRelation u
-  return $ KrM u v r
 modelGen n = do
   size <- choose (1, n)
   let u = [0 .. fromIntegral size - 1]
@@ -183,7 +175,7 @@ modelGen n = do
 
 arbitraryValuation :: Universe -> Gen Valuation
 arbitraryValuation u = do
-  props <- vectorOf (length u) (listOf arbitrary)
+  props <- vectorOf (length u) (sublistOf [0..10]) -- fixed vocabulary
   let val w = props !! fromIntegral w -- function
   return val
 
@@ -230,6 +222,24 @@ example11 = MS example1 [0,1,2]
 example12 :: ModelState
 example12 = MS example2 [0,1]
 
+
+\end{code}
+
+Here, we encode the example in Figure 2, \cite{Aloni2018}:
+
+\begin{code}
+w0, wa, wb, wab :: Integer
+(w0, wa, wb, wab) = (0,1,2,3)
+
+val2a18 :: Valuation
+val2a18 = fromJust . flip lookup [(w0,[]), (wa,[1]),(wb,[2]),(wab,[1,2])]
+
+m2a18 :: KripkeModel
+m2a18 = KrM [w0,wa,wb,wab] val2a18 []
+
+ms2a18, ms2b18 :: ModelState
+ms2a18 = MS m2a18 [wa, wb]
+ms2b18 = MS m2a18 [wa] 
 
 \end{code}
 
