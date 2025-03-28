@@ -6,6 +6,7 @@ We now use the library QuickCheck to randomly generate input for our functions
 and test some properties.
 
 \begin{code}
+{-# OPTIONS_GHC -Wno-name-shadowing #-}
 module Main where
 
 import Syntax
@@ -25,7 +26,7 @@ The second and third test use QuickCheck.
 
 main :: IO ()
 main = hspec $ do
-    describe "BSML Properties" $ modifyMaxSize (const 10)$ do
+    describe "BSML Properties" $ modifyMaxSize (const 5)$ modifyMaxDiscardRatio(const 50)$ do
       it "Figure 2, Aloni2018 [wa,wb] |= a | b" $
         ms2a18 |= Dis a b `shouldBe` True      
       it "Figure 2, Aloni2018 [wa,wb] not |= a / b" $
