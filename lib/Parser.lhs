@@ -21,7 +21,7 @@ pForm = spaces >> pCnt <* (spaces >> eof) where
   pGdis = char '/' >> return Gdis
 
   -- Diamond operator has higher precedence than conjunction
-  pDiaBox = (spaces >> try (pDiaOp <|> pBoxOp)) <|> pAtom
+  pDiaBox = spaces >> ( try (pDiaOp <|> pBoxOp) <|> pAtom)
   pDiaOp = char '<' >> char '>' >> Dia <$> pDiaBox
   pBoxOp = char '[' >> char ']' >> box <$> pDiaBox
   
