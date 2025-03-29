@@ -1,6 +1,11 @@
-\section{Wrapping it up in an exectuable}\label{sec:Main} 
+\subsection{Web server configuration}\label{sec:Main} 
 
 
+The server is built using Scotty \cite{scotty} and listens for POST requests at /input:
+
+
+
+\hide{
 \begin{code}
 
 {-# LANGUAGE DeriveGeneric #-}
@@ -29,6 +34,7 @@ import Semantics
 -- import Text.Parsec.Token
 -- import Text.Parsec.Language
 import Test.QuickCheck
+
 
 data Person = Person
     { name :: String
@@ -97,6 +103,13 @@ prop_implicationHolds :: BSMLForm -> BSMLForm -> ModelState -> Bool
 prop_implicationHolds f1 f2 m =
   not (m |= f1) || (m |= f2)
 
+\end{code}
+}
+
+
+
+
+\begin{code}
 main :: IO ()
 main = scotty 3001 $ do
     middleware allowCors
@@ -175,3 +188,38 @@ main = scotty 3001 $ do
           
 
 \end{code}
+
+
+\subsection{Usage}
+Our BSML model checker web application is available at \url{https://bsmlmc.seit.me}.
+
+Here we give an example to illustrate how to use the web application.
+
+We define a model with universe:\{W1,W2,W3,W4\}, state:\{W2,W3\}.In W1, p1 and p2 are true; in W2, p1 is true; in W3, p2 is true; W4 is empty. 
+W2 and W3 are reflexive and mutually related. We test whether formula $\Diamond p1 \land \Diamond p2$ holds in this model.
+Figure \ref{fig:interface1} shows how to input worlds, valuations and relations in interface the. 
+Figure \ref{fig:interface2} shows how to choose worlds in the state and input the formula. 
+By clicking \textbf{Evaluate} bottow, web can return model-checking results.
+Figure \ref{fig:model graph} displays a graphical representation of the model and state.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image/p1.png}
+    \caption{interface1}
+    \label{fig:interface1}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image/p2.png}
+    \caption{interface2}
+    \label{fig:interface2}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{image/p3.png}
+    \caption{model graph}
+    \label{fig:model graph}
+\end{figure}
