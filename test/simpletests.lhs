@@ -14,7 +14,7 @@ import Data.Either
 import Parser
 \end{code}
 }
-We uses the HSpec library to define different tests to check the correctness of our implementation.
+We use the HSpec library to define different tests to check the correctness of our implementation.
 We first begin with static tests based on examples defined earlier:
 
 \begin{code}
