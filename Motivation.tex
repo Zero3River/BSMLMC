@@ -1,7 +1,7 @@
 \section{Motivation}\label{Motivation}
 
 BSML (Bilateral State-Based Modal Logic) originates from a project led by Maria, 
-titled \textit{N∅thing is Logical} (NihiL)\footnote{For details, see \url{https://www.marialoni.org/Nihil}.}. 
+titled N$\varnothing$thing is Logical (NihiL)\footnote{For details, see \url{https://www.marialoni.org/Nihil}.}. 
 This project concerns formal semantics, which employs formalized methods—such as logic and mathematics—to analyze linguistic meaning. 
 Natural language does not always conform to classical logic. Consequently, formal semanticists develop non-classical logical systems to better capture linguistic phenomena.
 
@@ -43,13 +43,12 @@ BSML formalizes this tendency by introducing the \textit{nonemptiness atom} (NE)
 This leads to the prediction of both narrow-scope and wide-scope FC inferences, as well as their cancellation under negation.
 
 BSML is built upon team semantics, meaning that formulas are evaluated with respect to sets of possible worlds (teams) rather than individual worlds. 
-For example, in Figure\ref{fig.disjunct}, the black small square represents a state in a universe. $\(b\)$ is the zero-model of \( a \vee b \), because one of the disjuncts is empty.
+For example, in Figure\ref{disjunct}, the black small square represents a state in a universe. $\(b\)$ is the zero-model of \( a \vee b \), because one of the disjuncts is empty.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{image/disj1.png}
-    \caption{Models for \( a \vee b \)}
-    \label{fig.disjunct}
+    \caption{Models for \( a \vee b \)}\label{disjunct}
 \end{figure}
 
 Additionallt, BSML relies on a bilateral semantics, where each formula has both \textbf{support/assertion conditions ($\models$)} and \textbf{anti-support/rejection conditions ($\leftmodels$)}.
@@ -70,7 +69,7 @@ And logical consequence is defined as preservation of support.
 The pragmatic enrichment function \({[ \varphi ]}^+\) modifies the interpretation of formulas:
 
 \begin{quote}
-For any formula \( \varphi \): s \models $[\varphi]^+$ \quad \text{iff} \quad s \models \varphi \text{ and } s \neq \emptyset.
+For any formula \( \varphi \): s \models${[\varphi]}^+$ \quad \text{iff} \quad s \models\varphi\text{ and } s \neq\emptyset.
 \end{quote}
 
  Based on team-seamantics, BSML adopts a split disjunction based on state-based semantics:
