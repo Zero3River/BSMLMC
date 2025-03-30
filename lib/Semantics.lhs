@@ -1,7 +1,4 @@
-
-
-
-\section{Semantics}\label{sec:Semantics}
+\subsection{Semantics}\label{sec:Semantics}
 
 
 The semantics of BSML is based on \textit{team semantics}, where formulas are interpreted with respect to sets of possible worlds, which called \textit{states} or \textit{teams} rather than single worlds. A \textit{model} \(M\) is a triple \((W, R, V)\), where:
