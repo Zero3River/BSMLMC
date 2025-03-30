@@ -110,8 +110,12 @@ Inquisitive semantics commonly employs a global disjunction to capture questions
 
 With these approach, we establish a robust logical framework capable of predicting linguistic phenomena. 
 By comparing these predictions with actual language usage in the real world, we can gain valuable insights into the underlying mechanisms of language.
+
+
 It is easy to see that pragmatic enrichment has a non-trivial effect on disjunctions, 
-and it has non-trivial effects only on disjunctions and only if they occur in a positive environment.  
+and it has non-trivial effects only on disjunctions and only if they occur in a positive environment. 
+In other words, the effect of Neglect-Zero is restricted to disjunction sentences, vanishing under negation but reappearing under double negation.
+The following are some linguistic properties, which are crucial for understanding the system's behavior and its implications for free choice inferences:
 
 \begin{itemize}
     \item \textbf{Narrow Scope FC:} \quad ${[ \Diamond (\alpha \lor \beta) ]}^+ \models \Diamond \alpha \land \Diamond \beta$
@@ -121,5 +125,5 @@ and it has non-trivial effects only on disjunctions and only if they occur in a 
     \item \textbf{Double Negation:} \quad ${[\neg \neg \Diamond (\alpha \lor \beta)]}^+ \models \Diamond \alpha \land \Diamond \beta$
  \end{itemize}
  
- This project adopts $BSML^{\inqdisj}$, and the following is the specific Haskell implementation.
+ This project adopts \(\textbf{BSML}^{\inqdisj}\), and the following is the specific Haskell implementation.
    
