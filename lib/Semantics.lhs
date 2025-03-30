@@ -62,13 +62,10 @@ M, s &\leftmodels \varphi \inqdisj \psi \quad \text{iff} \quad M, s \leftmodels\
 Global disjunction, initial ruled out in favour of the split disjunction in \cite{Aloni2018} for the semantics of $\vee$, was reintroduced into $\BSML$ in \cite{Anttila2021} for better model-theoretic properties. 
 
 
-The following is the definition of our Data Type for Model Checker.
+The following are the basic data types use for our model checker:
 
-
+\hide{
 \begin{code}
--- Based on the Homework
-
--- {-# LANGUAGE InstanceSigs #-}
 module Semantics where
 
 import Test.QuickCheck
@@ -76,9 +73,10 @@ import Data.List
 
 import Syntax
 import Data.Maybe
+\end{code}
+}
 
-
-
+\begin{code}
 type World = Integer
 type Universe = [World]
 type Proposition = Int
@@ -90,7 +88,9 @@ type Relation = [(World,World)]
 data KripkeModel = KrM Universe Valuation Relation
 
 data ModelState = MS KripkeModel State
-
+\end{code}
+\hide{
+\begin{code}
 instance Show KripkeModel where
   show (KrM u v r) = "KrM " ++ show u ++ " " ++ vstr ++ " " ++ show r where
     vstr = "(fromJust . flip lookup " ++ show [(w, v w) | w <- u] ++ ")"
@@ -107,53 +107,52 @@ The following helper function defines the set of all successors of a world:
 (!) r w = map snd $ filter ((==) w . fst) r
 \end{code}
 
-Here we define the semantics of \textbf{BSML} ...
+The next helper function enumerates the list of all pairs of substates, whose union equals the input state:
 
 \begin{code}
-
--- helper function to find all pairs of worlds t and u that the union of t and u is the input s
 allPairs :: [World] -> [([World], [World])]
 allPairs []     = [([],[])]
 allPairs (x:xs) =
   [ (x:ts, x:us) | (ts,us) <- allPairs xs ] ++  
   [ (x:ts, us)   | (ts,us) <- allPairs xs ] ++  
   [ (ts, x:us)   | (ts,us) <- allPairs xs ]  
-
--- helper function to find all non-empty subsets of a list
+\end{code}
+The final helper function enumerates the list of all non-empty substates of an input state:
+\begin{code} 
 subsetsNonEmpty :: [World] -> [[World]]
 subsetsNonEmpty [] = [] 
 subsetsNonEmpty (x:xs) =
   let rest = subsetsNonEmpty xs
   in [[x]] ++ rest ++ map (x:) rest
-
+\end{code}
+Here we implement the semantics of $\BSML$:
+\begin{code}
 (|=) :: ModelState -> BSMLForm -> Bool
 (MS (KrM _ v _) s) |= (P n) = all (\w -> n `elem` v w) s
-(MS _ s) |= Bot = null s
-(MS _ s) |= NE = not $ null s
+(MS _ s)           |= Bot = null s
+(MS _ s)           |= NE = not $ null s
 (MS (KrM u v r) s) |= (Neg f) = MS (KrM u v r) s =| f
 m |= (Con f g) = m |= f && m |= g
-(MS k s) |= (Dis f g) = any (\(ts,us) -> MS k ts |= f && MS k us |= g) (allPairs s)
-m |= (Gdis f g) = m |= f || m |= g
+(MS k s)           |= (Dis f g) = any (\(ts,us) -> MS k ts |= f && MS k us |= g) (allPairs s)
+m                  |= (Gdis f g) = m |= f || m |= g
 (MS (KrM u v r) s) |= (Dia f) = all (\w -> any (\l -> MS (KrM u v r) l |= f ) (subsetsNonEmpty (r ! w)))  s
 
 
 
 (=|) :: ModelState -> BSMLForm -> Bool
-(MS (KrM _ v _) s) =| (P n) = all (\w -> n `notElem` v w) s
-(MS _ _) =| Bot = True
-(MS _ s) =| NE = null s
-(MS (KrM u v r) s) =| (Neg f) = MS (KrM u v r) s |= f
-(MS k s) =| (Con f g) = any (\(ts,us) -> MS k ts =| f && MS k us =| g) (allPairs s)
-m =| (Dis f g) = m =| f && m =| g
-m =| (Gdis f g) = m =| f && m =| g
+(MS (KrM _ v _) s)  =| (P n) = all (\w -> n `notElem` v w) s
+(MS _ _)            =| Bot = True
+(MS _ s)            =| NE = null s
+(MS (KrM u v r) s)  =| (Neg f) = MS (KrM u v r) s |= f
+(MS k s)            =| (Con f g) = any (\(ts,us) -> MS k ts =| f && MS k us =| g) (allPairs s)
+m                   =| (Dis f g) = m =| f && m =| g
+m                   =| (Gdis f g) = m =| f && m =| g
 (MS (KrM u v r) s)  =| (Dia f) = all (\w -> MS (KrM u v r) (r ! w) =| f)  s
 \end{code}
 
 
-The following provide QuickCheck properties for the ModelState.
+We define an arbitrary instance for \texttt{ModelState} as follows:
 \begin{code}
--- Based on homework 
-
 instance Arbitrary ModelState where
   arbitrary = sized modelStateGen
 
@@ -273,15 +272,4 @@ m3a22 = KrM [w0,wa,wb,wab] val3a22 rel3a22
 
 ms3a22 :: ModelState
 ms3a22 = MS m3a22 [wa,wb]
-
-counterexamplews1 :: ModelState
-counterexamplews1 = MS (KrM [0,1,2,3,4] (fromJust . flip lookup [(0,[0,4,6,8,9,10]),(1,[1,4,6,8]),(2,[0,3,5,8,9]),(3,[0,1,4,6,8]),(4,[1,2,3,7,8])]) [(0,0),(1,1),(1,4),(2,1),(2,4),(3,1),(3,2),(4,1)] ) [0,2,3]
-
-counterexamplewmd :: ModelState
-counterexamplewmd = MS (KrM [0,1,2] (fromJust . flip lookup [(0,[1,3,4,7,9]),(1,[0,2,6,7,8,9,10]),(2,[1,6,8,9])]) [(1,0),(1,1),(2,1),(2,2)]) [0,1]
-
-p :: BSMLForm
-p = P 0
-q :: BSMLForm
-q = P 1
 \end{code}
