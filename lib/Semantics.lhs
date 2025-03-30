@@ -62,7 +62,7 @@ M, s &\models \varphi \inqdisj \psi \quad \text{iff} \quad M, s \models \varphi 
 M, s &\leftmodels \varphi \inqdisj \psi \quad \text{iff} \quad M, s \leftmodels\varphi \text{ and } M, s \leftmodels \psi\\
 \end{array}
 \]
-more to add...
+
 
 The following is the definition of our Data Type for Model Checker.
 
