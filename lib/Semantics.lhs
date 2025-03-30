@@ -62,6 +62,7 @@ M, s &\models \varphi \inqdisj \psi \quad \text{iff} \quad M, s \models \varphi 
 M, s &\leftmodels \varphi \inqdisj \psi \quad \text{iff} \quad M, s \leftmodels\varphi \text{ and } M, s \leftmodels \psi\\
 \end{array}
 \]
+Global disjunction, initial ruled out in favour of the split disjunction in \cite{Aloni2018} for the semantics of $\vee$, was reintroduced into $\BSML$ in \cite{Anttila2021} for better model-theoretic properties. 
 
 
 The following is the definition of our Data Type for Model Checker.
