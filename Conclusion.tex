@@ -1,16 +1,25 @@
 \section{Conclusion}\label{sec:Conclusion}
 
-In this project, we have implemented a Haskell-based model checker for BSML (Bilateral State-Based Modal Logic). We gave a concise introduction about the basic framework of BSML and its extension with global disjunction.
-We then implemented the models, syntax and semantics in Haskell. Lastly, we used QuickCheck to check several facts about BSML.\@ 
-BSML provides a powerful framework for handling free-choice phenomena in natural language, and by using Haskell, we have built an efficient and reliable tool to evaluate complex models and formulas.
+In this project, we have developed a Haskell-based model checker for BSML (Bilateral State-Based Modal Logic). 
+We first provided a concise introduction to the core framework of BSML and its extension with global disjunction.
+We then implemented its models, syntax, and semantics in Haskell, ensuring a formal and structured representation of the system.\@ 
+To validate our implementation, we used QuickCheck to verify several key properties of BSML.\@
+Additionally, we developed a web interface to make the model checker more accessible and user-friendly.
+BSML offers a robust framework for capturing free-choice inferences in natural language,
+and our Haskell-based implementation provides an efficient and reliable tool for analyzing complex models and formulas.
 
-Currently, the implementation of BSML is limited to natural deduction, and there is no way to handle assumptions in Haskell. 
-Therefore, future work may involve providing a sequent calculus for the BSML system.
 
-Additionally, BSML has many other extended versions, all of which could be implemented in Haskell in the future. For example:
+Currently, our implementation of BSML is restricted to natural deduction, and Haskell does not yet provide a way to handle assumptions within this framework.
+Future work could focus on developing a sequent calculus for BSML, which would enable a more expressive proof system within the framework.
+This would allow for a more comprehensive exploration of the logical properties of BSML and its applications in natural language semantics.
+
+Additionally, BSML has many other extended versions, all of which could be implemented in Haskell in the future, such as:
 
 \textbf{QBSML} (see \citet{Aloni2023}) extends BSML with quantification over possible worlds and states. Implementing this extension in Haskell would refine our model checker to handle richer linguistic sentences, thus enhancing the expressiveness of BSML.\@
 
 \textbf{Bilateral Update Semantics (BiUS)} (See \citet{BiUS2023}) introduces a dynamic perspective on meaning change, incorporating updates. Implementing BiUS in the current model checker could enhance its ability to model information dynamics in discourse.
 
 These extensions will improve the expressiveness of BSML and further demonstrate Haskell's suitability for formal semantic modeling.
+
+In conclusion, our Haskell-based model checker for BSML provides a solid foundation for exploring the logical properties of natural language semantics.
+The combination of Haskell's strong type system and functional programming paradigm with the expressive power of BSML offers a promising avenue for future research in this field.
