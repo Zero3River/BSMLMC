@@ -17,22 +17,12 @@ module Main where
 
 import Web.Scotty
 import Network.Wai.Middleware.Cors
--- import Data.Text.Lazy (Text)
 import Data.Aeson (FromJSON, ToJSON, object, (.=))
--- import Data.Aeson ()
 import Control.Monad.IO.Class (liftIO)
 import GHC.Generics (Generic)
 import Syntax
 import Parser
 import Semantics
--- import Data.List
--- import Data.Maybe
--- import qualified Data.Aeson.Key as Key
--- import Text.Parsec
--- import Text.Parsec.String
--- import Text.Parsec.Expr
--- import Text.Parsec.Token
--- import Text.Parsec.Language
 import Test.QuickCheck
 
 
