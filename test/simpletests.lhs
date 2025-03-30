@@ -1,9 +1,6 @@
 \subsection{Simple Tests}
 \label{sec:simpletests}
-
-We now use the library QuickCheck to randomly generate input for our functions
-and test some properties.
-
+\hide{
 \begin{code}
 {-# OPTIONS_GHC -Wno-name-shadowing #-}
 module Main where
@@ -15,11 +12,9 @@ import Test.QuickCheck
 import Test.Hspec.QuickCheck
 import Data.Either
 import Parser
-
-
 \end{code}
-
-The following uses the HSpec library to define different tests.
+}
+We uses the HSpec library to define different tests to check the correctness of our implementation.
 We first begin with static tests based on examples defined earlier:
 
 \begin{code}
@@ -41,7 +36,7 @@ main = hspec $ do
       it "Figure 2(a), Aloni2022  [wa,wb] is not state-based" $
         isStateBased ms3a22 `shouldBe` False
 \end{code}
-The following checks the key pragmatic inferences hold for our implementation. For details, please refer to \cite{Aloni2022}:
+The following checks the key pragmatic inferences hold. For details, please refer to \cite{Aloni2022}:
 \begin{code}      
     describe "BSML semantic Properties" $ modifyMaxSize (const 5)$ modifyMaxDiscardRatio(const 50)$ do
       it "State-basedness implies indisputability" $

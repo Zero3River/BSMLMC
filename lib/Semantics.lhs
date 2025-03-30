@@ -4,7 +4,7 @@
 The semantics of BSML is based on \textit{team semantics}, where formulas are interpreted with respect to sets of possible worlds, which called \textit{states} or \textit{teams} rather than single worlds. A \textit{model} \(M\) is a triple \((W, R, V)\), where:
 
 \begin{itemize}
-    \item \(W\) is a nonempty set of possible worlds,
+    \item \(W\) is a non-empty set of possible worlds,
     \item \(R \subseteq W \times W\) is an accessibility relation,
     \item \(V: \text{Prop} \to \mathcal{P}(W)\) is a valuation function.
 \end{itemize}
