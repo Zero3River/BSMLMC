@@ -41,7 +41,7 @@ main = hspec $ do
       it "Figure 2(a), Aloni2022  [wa,wb] is not state-based" $
         isStateBased ms3a22 `shouldBe` False
 \end{code}
-The following checks the key pragmatic inferences hold for our implementation: 
+The following checks the key pragmatic inferences hold for our implementation. For details, please refer to \cite{Aloni2022}:
 \begin{code}      
     describe "BSML semantic Properties" $ modifyMaxSize (const 5)$ modifyMaxDiscardRatio(const 50)$ do
       it "State-basedness implies indisputability" $
