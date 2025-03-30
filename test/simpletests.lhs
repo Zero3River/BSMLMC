@@ -1,4 +1,4 @@
-\subsection{Simple Tests}
+\subsection{Testing Properties}
 \label{sec:simpletests}
 \hide{
 \begin{code}
@@ -36,7 +36,7 @@ main = hspec $ do
       it "Figure 2(a), Aloni2022  [wa,wb] is not state-based" $
         isStateBased ms3a22 `shouldBe` False
 \end{code}
-The following checks the key pragmatic inferences hold. For details, please refer to \cite{Aloni2022}:
+The following checks that certain semantic properties hold, in particular the validity of FC inferences. For details, please refer to \cite{Aloni2022}:
 \begin{code}      
     describe "BSML semantic Properties" $ modifyMaxSize (const 5)$ modifyMaxDiscardRatio(const 50)$ do
       it "State-basedness implies indisputability" $
