@@ -1,11 +1,11 @@
-\section{Motivation}\label{Motivation}
+\section{Linguistic Motivation and BSML Semantics}\label{Motivation}
 
 BSML (Bilateral State-Based Modal Logic) originates from a project led by Aloni, 
 titled N$\varnothing$thing is Logical (NihiL)\footnote{For details, see \url{https://www.marialoni.org/Nihil}.}. 
-This project concerns formal semantics, which employs formalized methods—such as logic and mathematics—to analyze linguistic meaning. 
-Natural language does not always conform to classical logic. Consequently, formal semanticists develop non-classical logical systems to better capture linguistic phenomena.
+This project concerns formal semantics. It is a field that uses formalized methods to analyze semantic phenomena and seeks to uncover the underlying rules about how meanings of complex expressions are built from their parts.
+Natural language, as used in daily communication, often does not conform to classical logic. Consequently, formal semanticists develop non-classical logical systems to better capture linguistic phenomena.
 
-BSML was initially designed to address a well-known issue in linguistics: free choice. Consider the following sentence:
+BSML was initially designed to address a well-known issue in linguistics: free choice (FC). Consider the following sentence:
 
 \begin{quote}
     You may go to the beach or to the cinema.
@@ -26,24 +26,49 @@ That is, while semantics concerns literal meaning, pragmatics examines how meani
     Some students in this class are studying logic.
 \end{quote}
 
-listeners typically infer that not all students are studying logic——otherwise, the speaker would have simply stated, ``All students are studying logic''.
+Listeners typically infer that not all students are studying logic——otherwise, the speaker would have simply stated, ``All students are studying logic''.
 This inference is not a semantic entailment but rather a pragmatic inference.
-In the case of free choice, the inference from disjunction to conjunction is also attributed to pragmatics.
 
-Aloni's approach to free choice is based on the idea that speakers construct mental models of reality when interpreting sentences. Her central claim (see \citet{Aloni2022}), termed \textbf{Neglect-Zero}, is as follows
+
+Similarly, in the case of free choice, 
+Aloni's approach to free choice is based on the idea that speakers construct mental models of reality when interpreting sentences. 
+Her central claim (see \citet{Aloni2022}), termed \textbf{Neglect-Zero}, is as follows
 \begin{quote}
     \textbf{Neglect-Zero:} 
      When interpreting a sentence, speakers construct mental models of reality.In doing so, they systematically neglect structures that satisfy the sentence through an empty configuration (zero-models).
     
 \end{quote}
-Intuitively, this means that when interpreting a disjunction, speakers ignore the possibility of an empty disjunct. For example, in the sentence ``Some boxes are black'', speakers typically do not consider the possibility of an empty box.
+Intuitively, this means that when interpreting a disjunction, speakers ignore the possibility of an empty disjunct.\@
+
+Here, we introduce several key non-classical semantics in BSML.\@ The full definitions will be provided in the next chapter.\@
 
 
-BSML formalizes this tendency by introducing the \textit{nonemptiness atom} (NE), which ensures that only nonempty states are considered in the interpretation of sentences. 
-This leads to the prediction of both narrow-scope and wide-scope FC inferences, as well as their cancellation under negation.
+First, BSML formalizes this tendency by introducing the \textit{nonemptiness atom} (NE), which ensures that only nonempty states are considered in the interpretation of sentences. 
+The NE operator is defined as follows:  
 
-BSML is built upon team semantics, meaning that formulas are evaluated with respect to sets of possible worlds (teams) rather than individual worlds. 
-For example, in Figure\ref{disjunct}, the black small square represents a state in a universe. \(b\) is the zero-model of \( a \vee b \), because one of the disjuncts is empty.
+\begin{quote}
+    \textbf{Nonemptiness Atom (NE):} 
+    \begin{itemize}
+        \item \textbf{Support Condition:} $M, s \models \text{NE}$ iff $s \neq \varnothing$.
+        \item \textbf{Anti-Support Condition:} $M, s \leftmodels \text{NE}$ iff $s = \varnothing$.
+    \end{itemize}
+\end{quote}
+
+
+    The operator NE is used to define a pragmatic enrichment function \({[ \quad]}^+\), which is not inherently part of the logical system, 
+    but the introduction of NE enables us to formally capture and implement this pragmatic effect within the logic system.:
+
+
+\begin{align*}
+    {[p]}^+ &= p \land \text{NE} \\
+    {[\neg \alpha]}^+ &= \neg {[\alpha]}^+ \land \text{NE} \\
+    {[\alpha \lor \beta]}^+ &= ({[\alpha]}^+ \lor {[\beta]}^+) \land \text{NE} \\
+    {[\alpha \land \beta]}^+ &= ({[\alpha]}^+ \land {[\beta]}^+) \land \text{NE} \\
+    {[\Diamond \alpha]}^+ &= \Diamond {[\alpha]}^+ \land \text{NE}
+\end{align*}
+
+Second, BSML is built upon team semantics, meaning that formulas are evaluated with respect to sets of possible worlds (teams) rather than individual worlds. 
+For example, in Figure\ref{disjunct}, the black small square represents a state in a universe.\(b\) is the zero-model of \( a \vee b \), because one of the disjuncts is empty.
 
 \begin{figure}[h]
     \centering
@@ -65,18 +90,7 @@ And logical consequence is defined as preservation of support.
 \(\varphi \models \psi\) \quad \text{iff} \quad $\forall M, s : M, s \models \varphi \Rightarrow M, s \models \psi$
 \end{quote}
 
-
-The pragmatic enrichment function \({[ \varphi ]}^+\) modifies the interpretation of formulas:
-
-
-\begin{quote}
-For any formula \( \varphi \): 
-\[
-s \models {[ \varphi ]}^+ \quad \text{iff} \quad s \models \varphi \text{ and } s \neq \emptyset.
-\]
-\end{quote}
-
- Based on team-semantics, BSML adopts a split disjunction based on state-based semantics:
+Based on team-semantics, BSML adopts a split disjunction based on state-based semantics:
 
 \begin{quote}
     $M, s \models \varphi \vee \psi \colon \Leftrightarrow$ there exist $t, u$ such that $s = t \cup u$ and $M, t \models \varphi$ and $M, u \models \psi$.
