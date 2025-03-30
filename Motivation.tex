@@ -43,7 +43,7 @@ BSML formalizes this tendency by introducing the \textit{nonemptiness atom} (NE)
 This leads to the prediction of both narrow-scope and wide-scope FC inferences, as well as their cancellation under negation.
 
 BSML is built upon team semantics, meaning that formulas are evaluated with respect to sets of possible worlds (teams) rather than individual worlds. 
-For example, in Figure\ref{disjunct}, the black small square represents a state in a universe. $\(b\)$ is the zero-model of \( a \vee b \), because one of the disjuncts is empty.
+For example, in Figure\ref{disjunct}, the black small square represents a state in a universe. \(b\) is the zero-model of \( a \vee b \), because one of the disjuncts is empty.
 
 \begin{figure}[h]
     \centering
@@ -68,8 +68,12 @@ And logical consequence is defined as preservation of support.
 
 The pragmatic enrichment function \({[ \varphi ]}^+\) modifies the interpretation of formulas:
 
+
 \begin{quote}
-For any formula \( \varphi \): s \models${[\varphi]}^+$ \quad \text{iff} \quad s \models\varphi\text{ and } s \neq\emptyset.
+For any formula \( \varphi \): 
+\[
+s \models {[ \varphi ]}^+ \quad \text{iff} \quad s \models \varphi \text{ and } s \neq \emptyset.
+\]
 \end{quote}
 
  Based on team-seamantics, BSML adopts a split disjunction based on state-based semantics:
