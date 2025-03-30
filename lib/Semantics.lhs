@@ -97,8 +97,8 @@ instance Show KripkeModel where
 
 instance Show ModelState where
   show (MS k s) = "MS " ++ show k ++ " " ++ show s
-
 \end{code}
+}
 
 The following helper function defines the set of all successors of a world:
 
