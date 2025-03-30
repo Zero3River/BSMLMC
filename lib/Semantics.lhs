@@ -285,14 +285,3 @@ p = P 0
 q :: BSMLForm
 q = P 1
 \end{code}
-
-The following is a QuickCheck example, change this to a better tautology test.
-
-\begin{code}
-badTautology :: BSMLForm
-badTautology =  Neg(Bot `Con` NE)
-
-prop_tautologyHolds :: ModelState -> Bool
-prop_tautologyHolds m = m |= badTautology
-
-\end{code}
