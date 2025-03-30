@@ -10,10 +10,18 @@ Additionally, the frontend generates a graph representation of the Kripke model 
 
 This web server makes the BSML model checker more accessible and user-friendly, allowing users to verify modal logic formulas without writing any Haskell code.
 
-\subsection{Web-Based User Interface}
-We developed a Next.js frontend that provides an intuitive user interface for building and evaluating logical models.  To handle mathematical formulas, we integrated KaTeX, a JavaScript library, which dynamically renders user-entered LaTeX formulas into HTML for clear and precise display. For visualizing Kripke models, we utilized HTML5 Canvas to dynamically draw the worlds (nodes) and relationships (edges) of the logical model. The nodes are color-coded to represent different states, and the graph updates in real-time based on user input, providing an interactive and responsive experience.
+The web server's source code is available on GitHub \cite{project_web}. 
+We developed this project with assistance from \textbf{V0 AI} \cite{v0_dev}, and detailed prompt information can be found in the README.
 
-To facilitate communication with the Haskell backend, we defined a structured interface, ModelEvaluationRequest, which encapsulates the essential elements of Kripke models and logical formulas. This interface includes:
+
+\subsection{Web-Based User Interface}
+We developed a Next.js frontend that provides an intuitive user interface for building and evaluating logical models. 
+To handle mathematical formulas, we integrated KaTeX, a JavaScript library, which dynamically renders user-entered LaTeX formulas into HTML for clear and precise display. 
+For visualizing Kripke models, we utilized HTML5 Canvas to dynamically draw the worlds (nodes) and relationships (edges) of the logical model. 
+The nodes are color-coded to represent different states, and the graph updates in real-time based on user input, providing an interactive and responsive experience.
+
+To facilitate communication with the Haskell backend, we defined a structured interface, ModelEvaluationRequest, which encapsulates the essential elements of Kripke models and logical formulas. 
+This interface includes:
 
 \begin{itemize}
 \item universe: A list of world identifiers.
