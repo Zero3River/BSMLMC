@@ -181,7 +181,7 @@ main = scotty 3001 $ do
 
 
 \subsection{Usage}
-Our BSML model checker web application is available at \url{https://bsmlmc.seit.me}.
+Our BSML model checker web application is available at \url{https://bsmlmc.seit.me}.\footnote{Code for the web application can be found at \url{https://github.com/CalebChen768/BSML-checker-frontend}}
 
 Here we give an example to illustrate how to use the web application.
 
